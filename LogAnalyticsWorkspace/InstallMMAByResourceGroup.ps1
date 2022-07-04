@@ -9,13 +9,6 @@ param(
 function GetVirtualMachinesByResourceGroup
 {
     $virtualMachines = az vm list --resource-group $resourceGroup --query "[?powerState=='VM running']" -d -o json | ConvertFrom-Json
-
-    if($virtualMachines)
-    {
-        Write-Error -Message "Virtual Machine list is empty" -ErrorAction Stop
-        return
-    }
-
     return $virtualMachines
 }
 
@@ -45,7 +38,7 @@ try
 
     $virtualMachines = GetVirtualMachinesByResourceGroup
     
-    UpdateVirtualMachinesAgents $virtualMachines
+    UpdateVirtualMachineAgents $virtualMachines
 }
 
 catch 

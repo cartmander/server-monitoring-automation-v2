@@ -10,13 +10,6 @@ param(
 function GetVirtualMachineByName
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$name') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
-
-    if($virtualMachine)
-    {
-        Write-Error -Message "Virtual Machine is not existing" -ErrorAction Stop
-        return
-    }
-
     return $virtualMachine
 }
 
