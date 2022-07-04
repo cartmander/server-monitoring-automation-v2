@@ -9,7 +9,7 @@ param(
 
 function GetVirtualMachineByName
 {
-    $virtualMachine = az vm show --resource-group $resourceGroup --name $name --query "[?powerState=='VM running']" -d -o json | ConvertFrom-Json
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$name') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
 
     if($virtualMachine)
     {
