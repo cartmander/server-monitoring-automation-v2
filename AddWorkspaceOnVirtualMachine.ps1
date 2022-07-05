@@ -3,6 +3,6 @@ param(
     [string] $workspaceKey
 )
 
-$newAgent = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
-$newAgent.AddCloudWorkspace($workspaceId, $workspaceKey)
-$newAgent.ReloadConfiguration()
+$agent = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
+$agent.AddCloudWorkspace($workspaceId, $workspaceKey)
+$agent.ReloadConfiguration()

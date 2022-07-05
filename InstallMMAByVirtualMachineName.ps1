@@ -3,17 +3,40 @@ param(
     [string] $workspaceId,
     [string] $workspaceKey,
     [string] $resourceGroup,
-    [string] $name,
+    [string] $virtualMachineName,
     [bool] $shouldReplaceExisting = $false
 )
 
 function GetVirtualMachineByName
 {
-    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$name') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
-    return $virtualMachine
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
+
+    if ($null -ne $virtualMachine)
+    {
+        return $virtualMachine
+    }
+
+    else
+    {
+        Write-Error "Virtual Machine: $virtualMachineName does not exist or is not running"
+        exit 1
+    }
+    
 }
 
-function UpdateVirtualMachineAgents
+function GetVirtualMachineWorkspaces
+{
+    param(
+        [object] $virtualMachine
+    )
+
+    $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript --name $virtualMachine.name --resource-group $resourceGroup --scripts "@GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
+    $agents = $getWorkspaces.value[0].message
+    
+    return $agents
+}
+
+function UpdateVirtualMachineWorkspaces
 {
     param(
         [object] $virtualMachine
@@ -21,7 +44,7 @@ function UpdateVirtualMachineAgents
 
     foreach ($resource in $virtualMachine.resources)
     {
-        if($shouldReplaceExisting -and $resource.typePropertiesType -eq "MicrosoftMonitoringAgent")
+        if ($shouldReplaceExisting -and $resource.typePropertiesType -eq "MicrosoftMonitoringAgent")
         {
             az vm extension delete -g $virtualMachine.resourceGroup --vm-name $virtualMachine.name -n $resource.name
         }
@@ -35,8 +58,18 @@ try
     az account set --subscription $subscription
 
     $virtualMachine = GetVirtualMachineByName
+
+    $agents = GetVirtualMachineWorkspaces $virtualMachine
     
-    UpdateVirtualMachineAgents $virtualMachine
+    if ($agents -like "*$workspaceId*")
+    {
+        Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
+    }
+
+    else
+    {
+        UpdateVirtualMachineWorkspaces $virtualMachine
+    }
 }
 
 catch 
