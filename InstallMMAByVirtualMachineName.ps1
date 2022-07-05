@@ -7,31 +7,21 @@ param(
     [bool] $shouldReplaceExisting = $false
 )
 
-function GetVirtualMachineByName
+function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
 
-    if ($null -ne $virtualMachine)
-    {
-        return $virtualMachine
-    }
-
-    else
+    if ($null -eq $virtualMachine)
     {
         Write-Error "Virtual Machine: $virtualMachineName does not exist or is not running"
         exit 1
     }
-    
 }
 
 function ListVirtualMachineWorkspaces
 {
-    param(
-        [object] $virtualMachine
-    )
-
     $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript `
-    --name $virtualMachine.name `
+    --name $virtualMachineName `
     --resource-group $resourceGroup `
     --scripts "@run-commands/GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
 
@@ -96,9 +86,9 @@ try
 {
     az account set --subscription $subscription
 
-    $virtualMachine = GetVirtualMachineByName
-    $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachine
-
+    ValidateVirtualMachine
+    $workspaceIdList = ListVirtualMachineWorkspaces
+    
     ValidateWorkspaces $workspaceIdList
     UpdateVirtualMachineWorkspaces $workspaceIdList
 
