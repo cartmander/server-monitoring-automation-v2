@@ -42,6 +42,8 @@ function UpdateVirtualMachineWorkspaces
         [string[]] $workspaceIdList
     )
 
+    $shouldAddWorkspace = $true
+
     if ($workspaceIdList.Count -eq 4 -and !$shouldReplaceExisting) 
     {
         Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
@@ -63,16 +65,21 @@ function UpdateVirtualMachineWorkspaces
 
             elseif ($id -eq $workspaceId -and !$shouldReplaceExisting)
             {
+                $shouldAddWorkspace = $false
                 Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
+                break
             }
         }
     }
 
-    az vm run-command invoke --command-id RunPowerShellScript `
-    --name $virtualMachineName `
-    --resource-group $resourceGroup `
-    --scripts "@run-commands/AddWorkspaceOnVirtualMachine.ps1" `
-    --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
+    if ($shouldAddWorkspace)
+    {
+        az vm run-command invoke --command-id RunPowerShellScript `
+        --name $virtualMachineName `
+        --resource-group $resourceGroup `
+        --scripts "@run-commands/AddWorkspaceOnVirtualMachine.ps1" `
+        --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
+    }
 }
 
 try
