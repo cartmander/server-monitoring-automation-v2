@@ -63,8 +63,7 @@ function UpdateVirtualMachineWorkspaces
 
             elseif ($id -eq $workspaceId -and !$shouldReplaceExisting)
             {
-                Write-Error "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
-                exit 1
+                Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
             }
         }
     }
