@@ -30,48 +30,36 @@ function ListVirtualMachineWorkspaces
     return $workspaceIdList
 }
 
-function ValidateWorkspaces
-{
-    param(
-        [string[]] $workspaceIdList
-    )
-
-    if ($workspaceIdList.Count -gt 0 -and $workspaceIdList.Count -lt 4)
-    {
-        foreach ($id in $workspaceIdList)
-        {
-            if ($id -eq $workspaceId -and !$shouldReplaceExisting)
-            {
-                Write-Error "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
-                exit 1
-            }
-        }
-    }
-
-    elseif ($workspaceIdList.Count -eq 4) 
-    {
-        Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
-        exit 1
-    }
-
-    return
-}
-
 function UpdateVirtualMachineWorkspaces
 {
     param(
         [string[]] $workspaceIdList
     )
 
-    if($shouldReplaceExisting)
+    if ($workspaceIdList.Count -eq 4 -and !$shouldReplaceExisting) 
+    {
+        Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
+        exit 1
+    }
+
+    if ($workspaceIdList.Count -gt 0)
     {
         foreach ($id in $workspaceIdList)
         {
-            az vm run-command invoke --command-id RunPowerShellScript `
-            --name $virtualMachineName `
-            --resource-group $resourceGroup `
-            --scripts "@run-commands/RemoveWorkspaceOnVirtualMachine.ps1" `
-            --parameters "workspaceId=$id"
+            if ($shouldReplaceExisting)
+            {
+                az vm run-command invoke --command-id RunPowerShellScript `
+                --name $virtualMachineName `
+                --resource-group $resourceGroup `
+                --scripts "@run-commands/RemoveWorkspaceOnVirtualMachine.ps1" `
+                --parameters "workspaceId=$id"
+            }
+
+            elseif ($id -eq $workspaceId -and !$shouldReplaceExisting)
+            {
+                Write-Error "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
+                exit 1
+            }
         }
     }
 
@@ -87,9 +75,8 @@ try
     az account set --subscription $subscription
 
     ValidateVirtualMachine
+
     $workspaceIdList = ListVirtualMachineWorkspaces
-    
-    ValidateWorkspaces $workspaceIdList
     UpdateVirtualMachineWorkspaces $workspaceIdList
 
     Write-Output "Workspace connected successfully"
