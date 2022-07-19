@@ -85,7 +85,7 @@ try
     $workspaceIdList = ListVirtualMachineWorkspaces
     UpdateVirtualMachineWorkspaces $workspaceIdList
 
-    Write-Output "Workspace connected successfully"
+    Write-Output "Done running the script"
 }
 
 catch 

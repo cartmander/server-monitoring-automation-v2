@@ -93,6 +93,8 @@ try
         $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachine.name
         UpdateVirtualMachineWorkspaces $virtualMachine.name $workspaceIdList
     }
+
+    Write-Output "Done running the script"
 }
 
 catch 
