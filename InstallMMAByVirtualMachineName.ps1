@@ -1,15 +1,15 @@
 param(
     [string] $subscription,
-    [string] $workspaceId,
-    [string] $workspaceKey,
     [string] $resourceGroup,
     [string] $virtualMachineName,
+    [string] $workspaceId,
+    [string] $workspaceKey,
     [bool] $shouldReplaceExisting = $false
 )
 
 function ValidateVirtualMachine
 {
-    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
 
     if ($null -eq $virtualMachine)
     {
@@ -41,7 +41,7 @@ function UpdateVirtualMachineWorkspaces
     if ($workspaceIdList.Count -eq 4 -and !$shouldReplaceExisting) 
     {
         Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
-        exit 1
+        continue
     }
 
     if ($workspaceIdList.Count -gt 0)
