@@ -88,6 +88,8 @@ function UpdateVirtualMachineWorkspaces
 
 try
 {
+    Write-Output "Running the script"
+    
     az account set --subscription $subscription
 
     ValidateVirtualMachine
