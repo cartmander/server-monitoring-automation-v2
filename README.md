@@ -1,20 +1,19 @@
-# Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+# Azure Agent Installation Automation
 
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+Running this Powershell script will allow you to add or update your virtual Machine/s to a certain scope of Virtual Machines under a current subscription in Azure.
+## Terraform tfvars  variables
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+Provide the following values in .tfvars (please see the .example file):
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+- Subscription - (string) The subscription to be used
+- Scope Type - (string) ResourceGroup | Tag
+- Scope - (string) name_of_resource_group | value_of_a_terraform_key (Ex. Terraform: [value])
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+- Has Log Analytics Workspace - (bool) If Log Analytics Workspace should be installed for both Windows and Linux VMs
+- Log Analytics Workspace ID - (string) ID of the new Log Analytics Workspace
+- Log Analytics Workspace Key - (string) Key of the new Log Analytics Workspace
+
+- Has Azure Monitor - (bool) If Azure Monitor should be installed for both Windows and Linux VMs
+## Expected Output
+
+Whatever Agent extensions you are allowing to be installed using this automation, the old Agent extensions of the VMs of a specified scope should now be replaced by the ones you provided in .tfvars. If there are no existing Agent extensions for certain VMs, they still should have the new Agent extensions.
