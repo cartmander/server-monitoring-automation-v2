@@ -88,8 +88,8 @@ function UpdateVirtualMachineWorkspaces
 
 try
 {
-    Write-Output "Running the script"
-    
+    Write-Output "Running the script..."
+
     az account set --subscription $subscription
 
     ValidateVirtualMachine
@@ -97,7 +97,7 @@ try
     $workspaceIdList = ListVirtualMachineWorkspaces
     UpdateVirtualMachineWorkspaces $workspaceIdList
 
-    Write-Output "Done running the script"
+    Write-Output "Done running the script..."
 }
 
 catch 
