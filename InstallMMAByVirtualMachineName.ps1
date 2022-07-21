@@ -1,9 +1,19 @@
 param(
+    [Parameter(Mandatory=$true)]
     [string] $subscription,
+
+    [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
+
+    [Parameter(Mandatory=$true)]
     [string] $virtualMachineName,
+
+    [Parameter(Mandatory=$true)]
     [string] $workspaceId,
+
+    [Parameter(Mandatory=$true)]
     [string] $workspaceKey,
+    
     [bool] $shouldReplaceExisting = $false
 )
 
