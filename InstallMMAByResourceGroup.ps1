@@ -12,7 +12,7 @@ function ValidateVirtualMachines
     
     if ($null -eq $virtualMachines)
     {
-        Write-Error "Resource Group: $resourceGroup does not exist or does not have a running virtual machine"
+        Write-Error "Resource Group: $resourceGroup does not exist or does not have a running Windows virtual machine"
         exit 1
     }
 

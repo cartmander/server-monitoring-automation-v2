@@ -9,11 +9,11 @@ param(
 
 function ValidateVirtualMachines
 {
-    $virtualMachines = az vm list --query "[?contains(storageProfile.osDisk.osType, 'Windows') && tags.Onboarding == '$tagValue' && powerState=='VM running']" -d -o json | ConvertFrom-Json
+    $virtualMachines = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && tags.Onboarding == '$tagValue' && powerState=='VM running']" -d -o json | ConvertFrom-Json
     
     if ($null -eq $virtualMachines)
     {
-        Write-Error "Tag Value: $tagValue does not exist or does not have a running virtual machine"
+        Write-Error "Tag Value: $tagValue does not exist or does not have a running Windows virtual machine"
         exit 1
     }
 

@@ -41,7 +41,7 @@ function UpdateVirtualMachineWorkspaces
     if ($workspaceIdList.Count -eq 4 -and !$shouldReplaceExisting) 
     {
         Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
-        continue
+        exit 1
     }
 
     if ($workspaceIdList.Count -gt 0)
