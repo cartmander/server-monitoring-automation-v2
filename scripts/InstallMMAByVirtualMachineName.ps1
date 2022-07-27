@@ -56,8 +56,10 @@ function UpdateVirtualMachineWorkspaces
 
     if ($workspaceIdList.Count -gt 0)
     {
+        Write-Output $workspaceIdList.Count
         foreach ($id in $workspaceIdList)
         {
+            Write-Output "For each"
             if ($shouldReplaceExisting)
             {
                 az vm run-command invoke --command-id RunPowerShellScript `
@@ -69,6 +71,7 @@ function UpdateVirtualMachineWorkspaces
 
             elseif ($id -eq $workspaceId -and !$shouldReplaceExisting)
             {
+                Write-Output "I am already connected"
                 $shouldAddWorkspace = $false
                 Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
                 break
