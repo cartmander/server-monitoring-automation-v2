@@ -32,8 +32,6 @@ function ListVirtualMachineWorkspaces
 
     $workspaceIdList = $getWorkspaces.value[0].message.Split()
 
-    Write-Output $workspaceIdList
-
     return $workspaceIdList
 }
 
