@@ -34,7 +34,8 @@ function ListVirtualMachineWorkspaces
         [string] $virtualMachineName
     )
 
-    $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript `
+    $getWorkspaces = az vm run-command invoke `
+    --command-id RunPowerShellScript `
     --name $virtualMachineName `
     --resource-group $resourceGroup `
     --scripts '@GetWorkspacesFromVirtualMachine.ps1' | ConvertFrom-Json
@@ -75,7 +76,8 @@ function UpdateVirtualMachineWorkspaces
 
     if ($workspaceIdList.Count -lt 4 -and $shouldAddWorkspace)
     {
-        az vm run-command invoke --command-id RunPowerShellScript `
+        az vm run-command invoke `
+        --command-id RunPowerShellScript `
         --name $virtualMachineName `
         --resource-group $resourceGroup `
         --scripts '@AddWorkspaceOnVirtualMachine.ps1' `

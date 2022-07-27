@@ -28,7 +28,10 @@ function ValidateVirtualMachine
 
 function ListVirtualMachineWorkspaces
 {
-    $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript --name $virtualMachineName --resource-group $resourceGroup --scripts `@GetWorkspacesFromVirtualMachine.ps1 | ConvertFrom-Json
+    $getWorkspaces = az vm run-command invoke `
+    --command-id RunPowerShellScript `
+    --name $virtualMachineName --resource-group $resourceGroup `
+    --scripts `@GetWorkspacesFromVirtualMachine.ps1 | ConvertFrom-Json
 
     $workspaceIdList = $getWorkspaces.value[0].message.Split()
 
@@ -65,7 +68,12 @@ function UpdateVirtualMachineWorkspaces
 
     if ($workspaceIdList.Count -lt 4 -and $shouldAddWorkspace)
     {
-        az vm run-command invoke --command-id RunPowerShellScript --name $virtualMachineName --resource-group $resourceGroup --scripts `@AddWorkspaceOnVirtualMachine.ps1 --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
+        az vm run-command invoke `
+        --command-id RunPowerShellScript `
+        --name $virtualMachineName `
+        --resource-group $resourceGroup `
+        --scripts `@AddWorkspaceOnVirtualMachine.ps1 `
+        --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
     }
 }
 
