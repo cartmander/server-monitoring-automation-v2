@@ -1,3 +1,5 @@
+trigger: none
+
 parameters:
   - name: subscription
     type: string
