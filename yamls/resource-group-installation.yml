@@ -1,21 +1,24 @@
 parameters:
-  - name: azureResourceManagerConnection
+  - name: subscription
     type: string
-    default: ICO-DEV-SERVICE-CONN
+  - name: resourceGroup
+    type: string
+  - name: workspaceId
+    type: string
+  - name: workspaceKey
+    type: string
 
 stages:
 - stage: Build
   displayName: Install Agent by Resource Group
   jobs:
   - job: Build
-    variables:
-    - group: AGENT-INSTALLATION-RESOURCE-GROUP-VARS
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: AzureCLI@2
         displayName: 'Install Agent by Resource Group'
         inputs:
-          azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+          azureSubscription: ICO-DEV-SERVICE-CONN
           scriptType: ps
           scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByResourceGroup.ps1'
-          arguments: '-subscription $(subscription) -resourceGroup $(resourceGroup) -workspaceId $(workspaceId) -workspaceKey $(workspaceKey)'
+          arguments: '-subscription ${{ parameters.subscription }} -resourceGroup ${{ parameters.resourceGroup }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'

@@ -1,15 +1,20 @@
 parameters:
-  - name: azureResourceManagerConnection
+  - name: subscription
     type: string
-    default: ICO-DEV-SERVICE-CONN
+  - name: resourceGroup
+    type: string
+  - name: virtualMachineName
+    type: string
+  - name: workspaceId
+    type: string
+  - name: workspaceKey
+    type: string
 
 stages:
 - stage: Build
   displayName: Install Agent by Virtual Machine
   jobs:
   - job: Build
-    variables:
-    - group: AGENT-INSTALLATION-VIRTUAL-MACHINE-VARS
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: AzureCLI@2
@@ -18,4 +23,4 @@ stages:
           azureSubscription: ${{ parameters.azureResourceManagerConnection }}
           scriptType: ps
           scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByVirtualMachineName.ps1'
-          arguments: '-subscription $(subscription) -resourceGroup $(resourceGroup) -virtualMachineName $(virtualMachineName) -workspaceId $(workspaceId) -workspaceKey $(workspaceKey)'
+          arguments: '-subscription ${{ parameters.subscription }} -resourceGroup ${{ parameters.resourceGroup }} -virtualMachineName ${{ parameters.virtualMachineName }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'
