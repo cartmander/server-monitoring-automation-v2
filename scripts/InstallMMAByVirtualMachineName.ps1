@@ -12,9 +12,7 @@ param(
     [string] $workspaceId,
 
     [Parameter(Mandatory=$true)]
-    [string] $workspaceKey,
-    
-    [bool] $shouldReplaceExisting = $false
+    [string] $workspaceKey
 )
 
 function ValidateVirtualMachine
@@ -48,40 +46,27 @@ function UpdateVirtualMachineWorkspaces
 
     $shouldAddWorkspace = $true
 
-    if ($workspaceIdList.Count -eq 4 -and !$shouldReplaceExisting) 
+    if ($workspaceIdList.Count -gt 3) 
     {
-        Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
-        exit 1
+        Write-Error "Virtual Machine: $virtualMachineName has more than three (3) workspaces already"
+        return
     }
 
     if ($workspaceIdList.Count -gt 0)
     {
-        Write-Output $workspaceIdList.Count
         foreach ($id in $workspaceIdList)
         {
-            Write-Output "For each"
-            Write-Output $id
-
-            if ($shouldReplaceExisting)
+            if ($id -eq $workspaceId)
             {
-                az vm run-command invoke --command-id RunPowerShellScript `
-                --name $virtualMachineName `
-                --resource-group $resourceGroup `
-                --scripts "@run-commands/RemoveWorkspaceOnVirtualMachine.ps1" `
-                --parameters "workspaceId=$id"
-            }
-
-            elseif ($id -eq $workspaceId -and !$shouldReplaceExisting)
-            {
-                Write-Output "I am already connected"
                 $shouldAddWorkspace = $false
+
                 Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
                 break
             }
         }
     }
 
-    if ($shouldAddWorkspace)
+    if ($workspaceIdList.Count -lt 4 -and $shouldAddWorkspace)
     {
         az vm run-command invoke --command-id RunPowerShellScript `
         --name $virtualMachineName `
