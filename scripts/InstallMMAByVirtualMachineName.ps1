@@ -61,8 +61,7 @@ function UpdateVirtualMachineWorkspaces
         {
             Write-Output "For each"
             Write-Output $id
-            Write-Output $workspaceId
-            
+
             if ($shouldReplaceExisting)
             {
                 az vm run-command invoke --command-id RunPowerShellScript `
