@@ -1,0 +1,27 @@
+parameters:
+  - name: azureResourceManagerConnection
+    type: string
+    default: ICO-DEV-SERVICE-CONN
+  - name: agentInstallationAutomation
+    displayName: 'Choose an agent installation scope:'
+    type: string
+    default: Virtual Machine - Install agent on a virtual machine
+    values:
+      - Virtual Machine - Install agent on a virtual machine
+      - Resource Group - Install agent throughout all virtual machines found in a resource group
+      - Tag - Install agent throughout all virtual machines with a given tag found in a resource group
+
+stages:
+- stage: Build
+  displayName: Install Agent by Tag
+  jobs:
+  - job: Build
+    pool: IRRNDG-AUTOMATION-POOL
+    steps:
+      - task: AzureCLI@2
+        displayName: 'Install Agent by Tag'
+        inputs:
+          azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+          scriptType: ps
+          scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByTagValue.ps1'
+          arguments: '-subscription $(subscription) -shouldUpdate $(shouldUpdate) -duration $(duration)'
