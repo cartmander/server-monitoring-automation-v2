@@ -20,7 +20,7 @@ stages:
       - task: AzureCLI@2
         displayName: 'Install Agent by Virtual Machine'
         inputs:
-          azureSubscription: ${{ parameters.azureResourceManagerConnection }}
+          azureSubscription: ICO-DEV-SERVICE-CONN
           scriptType: ps
           scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByVirtualMachineName.ps1'
           arguments: '-subscription ${{ parameters.subscription }} -resourceGroup ${{ parameters.resourceGroup }} -virtualMachineName ${{ parameters.virtualMachineName }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'
