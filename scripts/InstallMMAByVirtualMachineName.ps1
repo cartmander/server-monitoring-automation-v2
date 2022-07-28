@@ -75,7 +75,7 @@ function UpdateVirtualMachineWorkspaces
         --scripts @C:\\scripts\AgentInstallationAutomationv2\AddWorkspaceOnVirtualMachine.ps1 `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
 
-        Write-Output "Workspace ID: $workspaceId has successfully connected to Virtual Machine: $virtualMachineName"
+        Write-Output "Workspace ID: $workspaceId attempted to connect to Virtual Machine: $virtualMachineName"
     }
 }
 
