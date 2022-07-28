@@ -1,6 +1,9 @@
 trigger: none
 
 parameters:
+  - name: scope
+    type: string
+    default: "Virtual Machine"
   - name: subscription
     type: string
   - name: resourceGroup

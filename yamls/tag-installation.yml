@@ -1,6 +1,9 @@
 trigger: none
 
 parameters:
+  - name: scope
+    type: string
+    default: "Tag"
   - name: subscription
     type: string
   - name: resourceGroup
