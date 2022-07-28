@@ -12,17 +12,20 @@ parameters:
   - name: workspaceKey
     type: string
 
-stages:
-- stage: Build
-  displayName: Install Agent by Virtual Machine
-  jobs:
-  - job: Build
-    pool: IRRNDG-AUTOMATION-POOL
-    steps:
-      - task: AzureCLI@2
-        displayName: 'Install Agent by Virtual Machine'
-        inputs:
-          azureSubscription: ICO-DEV-SERVICE-CONN
-          scriptType: ps
-          scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByVirtualMachineName.ps1'
-          arguments: '-subscription ${{ parameters.subscription }} -resourceGroup ${{ parameters.resourceGroup }} -virtualMachineName ${{ parameters.virtualMachineName }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'
+pool: IRRNDG-AUTOMATION-POOL
+    
+steps:
+  - task: CopyFiles@2
+    displayName: 'Copy Run Commands Scripts to Virtual Machine'
+    inputs:
+      sourceFolder: "$(System.DefaultWorkingDirectory)/scripts/run-commands"
+      targetFolder: "C:/scripts/AgentInstallationAutomationv2"
+      overWrite: true
+
+  - task: AzureCLI@2
+    displayName: 'Install Agent on a Virtual Machine'
+    inputs:
+      azureSubscription: ICO-DEV-SERVICE-CONN
+      scriptType: ps
+      scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByVirtualMachineName.ps1'
+      arguments: '-subscription ${{ parameters.subscription }} -resourceGroup ${{ parameters.resourceGroup }} -virtualMachineName ${{ parameters.virtualMachineName }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'

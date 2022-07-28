@@ -31,7 +31,7 @@ function ListVirtualMachineWorkspaces
     $getWorkspaces = az vm run-command invoke `
     --command-id RunPowerShellScript `
     --name $virtualMachineName --resource-group $resourceGroup `
-    --scripts @C:\\scripts\GetWorkspacesFromVirtualMachine.ps1 | ConvertFrom-Json
+    --scripts @C:\\scripts\AgentInstallationAutomationv2\GetWorkspacesFromVirtualMachine.ps1 | ConvertFrom-Json
 
     $workspaceIdList = $getWorkspaces.value[0].message.Split()
 
@@ -72,7 +72,7 @@ function UpdateVirtualMachineWorkspaces
         --command-id RunPowerShellScript `
         --name $virtualMachineName `
         --resource-group $resourceGroup `
-        --scripts @C:\\scripts\AddWorkspaceOnVirtualMachine.ps1 `
+        --scripts @C:\\scripts\AgentInstallationAutomationv2\AddWorkspaceOnVirtualMachine.ps1 `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
     }
 }
