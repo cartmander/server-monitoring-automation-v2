@@ -81,6 +81,8 @@ function UpdateVirtualMachineWorkspaces
         --resource-group $resourceGroup `
         --scripts @C:\\scripts\AgentInstallationAutomationv2\AddWorkspaceOnVirtualMachine.ps1 `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
+
+        Write-Output "Workspace ID: $workspaceId has successfully connected to Virtual Machine: $virtualMachineName"
     }
 }
 
