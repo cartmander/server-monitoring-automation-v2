@@ -16,7 +16,7 @@ pool: IRRNDG-AUTOMATION-POOL
     
 steps:
   - task: CopyFiles@2
-    displayName: 'Copy Run Commands Scripts to Virtual Machine'
+    displayName: 'Copy Run Command Scripts to Virtual Machine'
     inputs:
       sourceFolder: "$(System.DefaultWorkingDirectory)/scripts/run-commands"
       targetFolder: "C:/scripts/AgentInstallationAutomationv2"
