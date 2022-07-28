@@ -31,7 +31,7 @@ function ListVirtualMachineWorkspaces
     $params = "--command-id", "RunPowerShellScript", 
     "--name", $virtualMachineName, 
     "--resource-group", $resourceGroup, 
-    "--scripts", "@GetWorkspacesFromVirtualMachine.ps1"
+    "--scripts", "C:\scripts\GetWorkspacesFromVirtualMachine.ps1"
 
     $getWorkspaces = az vm run-command invoke $params | ConvertFrom-Json
     $workspaceIdList = $getWorkspaces.value[0].message.Split()
@@ -72,7 +72,7 @@ function UpdateVirtualMachineWorkspaces
         $params = "--command-id", "RunPowerShellScript", 
         "--name", $virtualMachineName, 
         "--resource-group", $resourceGroup, 
-        "--scripts", "@AddWorkspaceOnVirtualMachine.ps1", 
+        "--scripts", "C:\scripts\AddWorkspaceOnVirtualMachine.ps1", 
         "--parameters", "'workspaceId=$workspaceId' 'workspaceKey=$workspaceKey'"
 
         az vm run-command invoke $params
