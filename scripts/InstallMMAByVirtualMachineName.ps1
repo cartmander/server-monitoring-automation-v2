@@ -75,7 +75,7 @@ function UpdateVirtualMachineWorkspaces
         "--scripts", "@AddWorkspaceOnVirtualMachine.ps1", 
         "--parameters", "'workspaceId=$workspaceId' 'workspaceKey=$workspaceKey'"
 
-        az vm run-command invoke $params
+        #az vm run-command invoke $params
     }
 }
 
