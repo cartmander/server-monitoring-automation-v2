@@ -60,7 +60,7 @@ function UpdateVirtualMachineWorkspaces
             {
                 $shouldAddWorkspace = $false
 
-                Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName"
+                Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName and will not attempt to reconnect anymore"
                 break
             }
         }
