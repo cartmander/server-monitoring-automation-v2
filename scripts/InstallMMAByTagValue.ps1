@@ -34,10 +34,10 @@ function ListVirtualMachineWorkspaces
         [string] $virtualMachineName
     )
 
-    $getWorkspaces = az vm run-command invoke `
-    --command-id RunPowerShellScript `
-    --name $virtualMachineName --resource-group $resourceGroup `
-    --scripts @C:\\scripts\AgentInstallationAutomationv2\GetWorkspacesFromVirtualMachine.ps1 | ConvertFrom-Json
+    $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript `
+    --name $virtualMachineName `
+    --resource-group $resourceGroup `
+    --scripts "@run-commands/GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
 
     $workspaceIdList = $getWorkspaces.value[0].message.Split()
 
@@ -75,15 +75,24 @@ function UpdateVirtualMachineWorkspaces
 
     if ($workspaceIdList.Count -lt 4 -and $shouldAddWorkspace)
     {
-        az vm run-command invoke `
-        --command-id RunPowerShellScript `
+        az vm run-command invoke --command-id RunPowerShellScript `
         --name $virtualMachineName `
         --resource-group $resourceGroup `
-        --scripts @C:\\scripts\AgentInstallationAutomationv2\AddWorkspaceOnVirtualMachine.ps1 `
+        --scripts "@run-commands/AddWorkspaceOnVirtualMachine.ps1" `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
 
         Write-Output "Workspace ID: $workspaceId attempted to connect to Virtual Machine: $virtualMachineName"
     }
+
+    az vm run-command invoke --command-id RunPowerShellScript `
+    --name $virtualMachineName `
+    --resource-group $resourceGroup `
+    --scripts "@run-commands/RemoveFromSccmCollection.ps1"
+
+    az vm run-command invoke --command-id RunPowerShellScript `
+    --name $virtualMachineName `
+    --resource-group $resourceGroup `
+    --scripts "@run-commands/EnableMachineReadiness.ps1"
 }
 
 try
