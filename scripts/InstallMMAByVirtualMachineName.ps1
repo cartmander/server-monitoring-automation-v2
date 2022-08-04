@@ -74,13 +74,13 @@ function UpdateVirtualMachineWorkspaces
         --scripts "@run-commands/AddWorkspaceOnVirtualMachine.ps1" `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
 
+        az vm run-command invoke --command-id RunPowerShellScript `
+        --name $virtualMachineName `
+        --resource-group $resourceGroup `
+        --scripts "@run-commands/EnableMachineReadiness.ps1"
+
         Write-Output "Workspace ID: $workspaceId attempted to connect to Virtual Machine: $virtualMachineName"
     }
-
-    az vm run-command invoke --command-id RunPowerShellScript `
-    --name $virtualMachineName `
-    --resource-group $resourceGroup `
-    --scripts "@run-commands/EnableMachineReadiness.ps1"
 }
 
 try
