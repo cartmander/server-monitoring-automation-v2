@@ -80,11 +80,6 @@ function UpdateVirtualMachineWorkspaces
     az vm run-command invoke --command-id RunPowerShellScript `
     --name $virtualMachineName `
     --resource-group $resourceGroup `
-    --scripts "@run-commands/RemoveFromSccmCollection.ps1"
-
-    az vm run-command invoke --command-id RunPowerShellScript `
-    --name $virtualMachineName `
-    --resource-group $resourceGroup `
     --scripts "@run-commands/EnableMachineReadiness.ps1"
 }
 
