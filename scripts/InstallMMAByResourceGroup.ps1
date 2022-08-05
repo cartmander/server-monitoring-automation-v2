@@ -75,7 +75,7 @@ function UpdateVirtualMachineWorkspaces
         az vm run-command invoke --command-id RunPowerShellScript `
         --name $virtualMachineName `
         --resource-group $resourceGroup `
-        --scripts "@run-commands/AddWorkspaceOnVirtualMachine.ps1" `
+        --scripts "@run-commands/OnboardVirtualMachine.ps1" `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
 
         az vm run-command invoke --command-id RunPowerShellScript `
