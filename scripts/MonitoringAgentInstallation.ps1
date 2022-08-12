@@ -20,7 +20,7 @@ param(
 
 function ValidateVirtualMachines
 {
-    $virtualMachines = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && tags.Onboarding == '$tagValue' && tags.OnboardingStatus != 'Done' && powerState=='VM running']" -d -o json | ConvertFrom-Json
+    $virtualMachines = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && powerState=='VM running']" -d -o json | ConvertFrom-Json
     
     if ($null -eq $virtualMachines)
     {

@@ -29,5 +29,5 @@ steps:
     inputs:
       azureSubscription: ICO-DEV-SERVICE-CONN
       scriptType: ps
-      scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByTagging.ps1'
+      scriptPath: '$(System.DefaultWorkingDirectory)/scripts/MonitoringAgentInstallation.ps1'
       arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }} -resourceGroup ${{ parameters.resourceGroup }} -tagValue ${{ parameters.tagValue }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'
