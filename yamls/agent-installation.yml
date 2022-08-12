@@ -1,11 +1,6 @@
 trigger: none
 
 parameters:
-  - name: scope
-    type: string
-    default: "Tag"
-  - name: subscription
-    type: string
   - name: resourceGroup
     type: string
   - name: tagValue
@@ -26,7 +21,7 @@ steps:
       overWrite: true
 
   - task: AzureCLI@2
-    displayName: 'Install Agent on Virtual Machines by Tag'
+    displayName: 'Install Agent on Virtual Machines by Tagging'
     inputs:
       azureSubscription: ICO-DEV-SERVICE-CONN
       scriptType: ps

@@ -1,8 +1,5 @@
 param(
     [Parameter(Mandatory=$true)]
-    [string] $subscription,
-
-    [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
 
     [Parameter(Mandatory=$true)]
@@ -67,13 +64,15 @@ function UpdateVirtualMachineWorkspaces
             {
                 $shouldAddWorkspace = $false
 
-                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName and will not attempt to reconnect anymore"
+                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName" -ForegroundColor Yellow
                 break
             }
         }
     }
 
-    if ($workspaceIdList.Count -lt 4 -and $shouldAddWorkspace)
+    $shouldOnboard = $workspaceIdList.Count -lt 4 -and $shouldAddWorkspace
+
+    if ($shouldOnboard)
     {
         az vm run-command invoke --command-id RunPowerShellScript `
         --name $virtualMachineName `
@@ -86,23 +85,52 @@ function UpdateVirtualMachineWorkspaces
         --resource-group $resourceGroup `
         --scripts "@run-commands/EnableMachineReadiness.ps1"
 
-        Write-Host "Workspace ID: $workspaceId attempted to connect to Virtual Machine: $virtualMachineName"
+        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }
+
+    return $shouldOnboard
 }
 
-function ListOnboardedVirtualMachines
+function ListOnboardedVirtualMachine
 {
     param(
-        
+        [object] $virtualMachine
     )
+
+    $onboardedVirtualMachine = New-Object -Type PSObject -Property @{
+        'ResourceGroup' = $virtualMachine.resourceGroup
+        'VirtualMachineName' = $virtualMachine.name
+    }
+
+
+    return $onboardedVirtualMachine
+}
+
+function DisplayOnboardedVirtualMachines
+{
+    param(
+        [object[]] $onboardedVirtualMachinesList
+    )
+
+    $vmCount = $onboardedVirtualMachinesList.Count
+
+    if ($vmCount -ne 0)
+    {
+        Write-Host "List of Onboarded Virtual Machines: $vmCount virtual machines" -ForegroundColor Green
+        $onboardedVirtualMachinesList | Select-Object -Property ResourceGroup,VirtualMachineName | Sort-Object -Property ResourceGroup | Format-Table
+    }
+
+    else
+    {
+        Write-Host "No virtual machines were onboarded" -ForegroundColor Yellow
+    }
 }
 
 try
 {
     Write-Host "Running the script..."
 
-    az account set --subscription $subscription
-
+    $onboardedVirtualMachinesList = @()
     $virtualMachines = ValidateVirtualMachines
     $counter = 0
     
@@ -110,8 +138,16 @@ try
     {
         Write-Progress -Activity 'Processing Virtual Machine Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $virtualMachines.Count) * 100)
         $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachine.name
-        UpdateVirtualMachineWorkspaces $virtualMachine.name $workspaceIdList
-    }
+        $isOnboarded = UpdateVirtualMachineWorkspaces $virtualMachine.name $workspaceIdList
+
+        if($isOnboarded)
+        {
+            $onboardedVirtualMachine = ListOnboardedVirtualMachine $virtualMachine
+            $onboardedVirtualMachinesList += $onboardedVirtualMachine
+        }
+    } 
+
+    DisplayOnboardedVirtualMachines $onboardedVirtualMachinesList
 
     Write-Host "Done running the script..."
 }
