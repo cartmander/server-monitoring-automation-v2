@@ -1,6 +1,10 @@
 trigger: none
 
 parameters:
+  - name: username
+    type: string
+  - name: password
+    type: string
   - name: resourceGroup
     type: string
   - name: tagValue
@@ -26,4 +30,4 @@ steps:
       azureSubscription: ICO-DEV-SERVICE-CONN
       scriptType: ps
       scriptPath: '$(System.DefaultWorkingDirectory)/scripts/InstallMMAByTagValue.ps1'
-      arguments: '-subscription ${{ parameters.subscription }} -resourceGroup ${{ parameters.resourceGroup }} -tagValue ${{ parameters.tagValue }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'
+      arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }} -resourceGroup ${{ parameters.resourceGroup }} -tagValue ${{ parameters.tagValue }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'

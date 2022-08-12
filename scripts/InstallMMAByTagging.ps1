@@ -1,5 +1,11 @@
 param(
     [Parameter(Mandatory=$true)]
+    [string] $username,
+
+    [Parameter(Mandatory=$true)]
+    [string] $password,
+
+    [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
 
     [Parameter(Mandatory=$true)]
@@ -129,6 +135,8 @@ function DisplayOnboardedVirtualMachines
 try
 {
     Write-Host "Running the script..."
+
+    az login -u $username -p $password
 
     $onboardedVirtualMachinesList = @()
     $virtualMachines = ValidateVirtualMachines
