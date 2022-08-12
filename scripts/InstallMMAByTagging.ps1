@@ -90,6 +90,13 @@ function UpdateVirtualMachineWorkspaces
     }
 }
 
+function ListOnboardedVirtualMachines
+{
+    param(
+        
+    )
+}
+
 try
 {
     Write-Host "Running the script..."
