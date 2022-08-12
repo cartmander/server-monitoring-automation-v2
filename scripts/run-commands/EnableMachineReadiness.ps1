@@ -9,7 +9,7 @@ begin
     {
         Write-Error "$($error[0].Exception.Message)"
         Write-Host "Stopping script. We need to stop the HealthService properly."
-        Break
+        break
     }
 
     $StoppingServiceTime = (Get-Date).AddSeconds(30)

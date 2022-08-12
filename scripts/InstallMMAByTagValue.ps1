@@ -17,7 +17,7 @@ param(
 
 function ValidateVirtualMachines
 {
-    $virtualMachines = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && tags.Onboarding == '$tagValue' && powerState=='VM running']" -d -o json | ConvertFrom-Json
+    $virtualMachines = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && tags.Onboarding == '$tagValue' && tags.OnboardingStatus != 'Done' && powerState=='VM running']" -d -o json | ConvertFrom-Json
     
     if ($null -eq $virtualMachines)
     {
@@ -67,7 +67,7 @@ function UpdateVirtualMachineWorkspaces
             {
                 $shouldAddWorkspace = $false
 
-                Write-Output "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName and will not attempt to reconnect anymore"
+                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName and will not attempt to reconnect anymore"
                 break
             }
         }
@@ -86,28 +86,30 @@ function UpdateVirtualMachineWorkspaces
         --resource-group $resourceGroup `
         --scripts "@run-commands/EnableMachineReadiness.ps1"
 
-        Write-Output "Workspace ID: $workspaceId attempted to connect to Virtual Machine: $virtualMachineName"
+        Write-Host "Workspace ID: $workspaceId attempted to connect to Virtual Machine: $virtualMachineName"
     }
 }
 
 try
 {
-    Write-Output "Running the script..."
+    Write-Host "Running the script..."
 
     az account set --subscription $subscription
 
     $virtualMachines = ValidateVirtualMachines
+    $counter = 0
     
     foreach ($virtualMachine in $virtualMachines)
     {
+        Write-Progress -Activity 'Processing Virtual Machine Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $virtualMachines.Count) * 100)
         $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachine.name
         UpdateVirtualMachineWorkspaces $virtualMachine.name $workspaceIdList
     }
 
-    Write-Output "Done running the script..."
+    Write-Host "Done running the script..."
 }
 
 catch 
 {
-    Write-Output $_
+    Write-Host $_
 }
