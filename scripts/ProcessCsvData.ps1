@@ -66,9 +66,7 @@ function ProcessCsv
             $csvData = BuildCsvData $csvData $columnName $columnValue
         }
 
-        Set-Location scripts
-
-        .\MonitoringAgentInstallation.ps1 -subscription $csvData.Subscription `
+        .\scripts\MonitoringAgentInstallation.ps1 -subscription $csvData.Subscription `
         -resourceGroup $csvData.ResourceGroup `
         -virtualMachineName $csvData.VirtualMachineName `
         -workspaceId $csvData.WorkspaceId `
