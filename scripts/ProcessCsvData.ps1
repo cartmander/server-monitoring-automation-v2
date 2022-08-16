@@ -19,29 +19,17 @@ function ValidateCsv
             exit 1
         }
     }
+
+    return $csv
 }
 
-function BuildCsvData
+function ProcessCsv
 {
     param(
-        [object] $csvData,
-        [string] $columnName,
-        [string] $columnValue
+        [object] $csv
     )
 
-    $csvData.Add($columnName, $columnValue)
-
-    return $csvData
-}
-
-try
-{
-    Write-Output "Running the script..."
-
-    $csv = Import-Csv $csvFilePath
     $csvCount = Import-Csv $csv | Measure-Object
-
-    ValidateCsv $csv
 
     $counter = 0
     foreach ($data in $csv)
@@ -65,6 +53,29 @@ try
         -workspaceId $csvData.WorkspaceId `
         -workspaceKey $csvData.WorkspaceKey
     }
+}
+
+function BuildCsvData
+{
+    param(
+        [object] $csvData,
+        [string] $columnName,
+        [string] $columnValue
+    )
+
+    $csvData.Add($columnName, $columnValue)
+
+    return $csvData
+}
+
+try
+{
+    Write-Output "Running the script..."
+
+    $csv = Import-Csv $csvFilePath
+
+    $validatedCsv = ValidateCsv $csv
+    ProcessCsv $validatedCsv
 
     Write-Output "Done running the script..."
 }
