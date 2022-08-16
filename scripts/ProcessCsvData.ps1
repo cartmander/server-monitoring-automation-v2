@@ -21,6 +21,19 @@ function ValidateCsv
     }
 }
 
+function BuildCsvData
+{
+    param(
+        [object] $csvData,
+        [string] $columnName,
+        [string] $columnValue
+    )
+
+    $csvData.Add($columnName, $columnValue)
+
+    return $csvData
+}
+
 try
 {
     Write-Output "Running the script..."
@@ -32,24 +45,21 @@ try
     foreach ($data in $csv)
     { 
         $column = $data | Get-Member -MemberType Properties
-        
-        $object = @{
-            "Subscription" = $null
-            "ResourceGroup" = $null
-            "VirtualMachine" = $null
-            "WorkspaceId" = $null
-            "WorkspaceKey" = $null
-        }
+        $csvData = @{}
 
         for($i = 0; $i -lt $column.Count; $i++)
         {
             $columnName = $column[$i].Name
             $columnValue = $data | Select-Object -ExpandProperty $columnName
 
-            #Create an object with onboarding properties
+            $csvData = BuildCsvData $csvData $columnName $columnValue
         }
 
-        ./MonitoringAgentInstallation -resourceGroup
+        ./MonitoringAgentInstallation -subscription $csvData.Subscription `
+        -resourceGroup $csvData.ResourceGroup `
+        -virtualMachineName $csvData.VirtualMachineName `
+        -workspaceId $csvData.WorkspaceId `
+        -workspaceKey $csvData.WorkspaceKey
     }
 
     Write-Output "Done running the script..."

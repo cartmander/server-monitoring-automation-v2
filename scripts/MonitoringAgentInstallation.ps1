@@ -6,7 +6,7 @@ param(
     [string] $resourceGroup,
 
     [Parameter(Mandatory=$true)]
-    [string] $tagValue,
+    [string] $virtualMachineName,
 
     [Parameter(Mandatory=$true)]
     [string] $workspaceId,
@@ -17,11 +17,12 @@ param(
 
 function ValidateVirtualMachines
 {
-    $virtualMachines = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && powerState=='VM running']" -d -o json | ConvertFrom-Json
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
     
-    if ($null -eq $virtualMachines)
+    if ($null -eq $virtualMachine)
     {
-        Write-Error "Query does not have a running Windows virtual machine"
+        Write-Error "Query: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
+        Write-Error "Query does not have a running Windows virtual machine or does not exist"
         exit 1
     }
 
