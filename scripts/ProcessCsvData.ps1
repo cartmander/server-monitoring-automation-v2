@@ -63,11 +63,14 @@ function ProcessCsv
             $csvData = BuildCsvData $csvData $columnName $columnValue
         }
 
-        .\scripts\MonitoringAgentInstallation.ps1 -subscription $csvData.Subscription `
+        .\scripts\MonitoringAgentInstallation.ps1 
+        -subscription $csvData.Subscription `
         -resourceGroup $csvData.ResourceGroup `
         -virtualMachineName $csvData.VirtualMachineName `
         -workspaceId $csvData.WorkspaceId `
-        -workspaceKey $csvData.WorkspaceKey
+        -workspaceKey $csvData.WorkspaceKey `
+        -currentCount $counter `
+        -total $csvObject.Count
     }
 }
 
@@ -75,14 +78,14 @@ try
 {
     az login -u $username -p $password
 
-    Write-Host "Running the script..." -ForegroundColor Green
+    Write-Host "Initializing automation..." -ForegroundColor Green
 
     $csv = Import-Csv "csv/VirtualMachines.csv"
 
     $validatedCsv = ValidateCsv $csv
     ProcessCsv $validatedCsv
 
-    Write-Host "Done running the script..." -ForegroundColor Green
+    Write-Host "Done running the automation..." -ForegroundColor Green
 }
 
 catch 

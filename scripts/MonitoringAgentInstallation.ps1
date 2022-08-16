@@ -12,7 +12,13 @@ param(
     [string] $workspaceId,
 
     [Parameter(Mandatory=$true)]
-    [string] $workspaceKey
+    [string] $workspaceKey,
+
+    [Parameter(Mandatory=$true)]
+    [string] $currentCount,
+
+    [Parameter(Mandatory=$true)]
+    [string] $total
 )
 
 function ValidateVirtualMachine
@@ -100,7 +106,7 @@ try
     $virtualMachine = ValidateVirtualMachine
     $virtualMachineName = $virtualMachine.name
 
-    Write-Host "Onboarding in progress for virtual machine: $virtualMachineName..." -ForegroundColor Cyan
+    Write-Host "Onboarding virtual machine [$currentCount / $total]: $virtualMachineName..." -ForegroundColor Cyan
     
     $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
     UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
