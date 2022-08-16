@@ -92,17 +92,17 @@ function UpdateVirtualMachineWorkspaces
         Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }
 
-    return $shouldOnboard
+    return $x
 }
 
 function DisplayOnboardedVirtualMachine
 {
     param(
         [string] $virtualMachineName,
-        [bool] $isOnboarded
+        [bool] $x
     )
 
-    if ($isOnboarded)
+    if ($x)
     {
         Write-Host "Onboarded Virtual Machine:" -ForegroundColor Green
         $virtualMachineName | Select-Object -Property ResourceGroup,VirtualMachineName | Sort-Object -Property ResourceGroup | Format-Table
@@ -123,9 +123,9 @@ try
 
     Write-Host "Onboarding in progress for virtual machine: $virtualMachineName..." -ForegroundColor Cyan
     $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
-    $isOnboarded = UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+    $x = UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
 
-    DisplayOnboardedVirtualMachine $virtualMachineName $isOnboarded
+    DisplayOnboardedVirtualMachine $virtualMachineName $x
 }
 
 catch 
