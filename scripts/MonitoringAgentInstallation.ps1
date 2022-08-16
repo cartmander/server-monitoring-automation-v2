@@ -95,32 +95,17 @@ function UpdateVirtualMachineWorkspaces
     return $shouldOnboard
 }
 
-function ListOnboardedVirtualMachine
-{
-    param(
-        [object] $virtualMachine
-    )
-
-    $onboardedVirtualMachine = New-Object -Type PSObject -Property @{
-        'ResourceGroup' = $virtualMachine.resourceGroup
-        'VirtualMachineName' = $virtualMachine.name
-    }
-    
-    return $onboardedVirtualMachine
-}
-
 function DisplayOnboardedVirtualMachine
 {
     param(
-        [object] $onboardedVirtualMachine
+        [string] $virtualMachineName,
+        [bool] $isOnboarded
     )
 
-    $virtualMachineName = $onboardedVirtualMachine.VirtualMachineName
-
-    if ($null -ne $onboardedVirtualMachine)
+    if ($isOnboarded)
     {
         Write-Host "Onboarded Virtual Machine:" -ForegroundColor Green
-        $onboardedVirtualMachine | Select-Object -Property ResourceGroup,VirtualMachineName | Sort-Object -Property ResourceGroup | Format-Table
+        $virtualMachineName | Select-Object -Property ResourceGroup,VirtualMachineName | Sort-Object -Property ResourceGroup | Format-Table
     }
 
     else
@@ -140,12 +125,7 @@ try
     $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
     $isOnboarded = UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
 
-    if($isOnboarded)
-    {
-        $onboardedVirtualMachine = ListOnboardedVirtualMachine $virtualMachine
-    }
-
-    DisplayOnboardedVirtualMachine $onboardedVirtualMachine
+    DisplayOnboardedVirtualMachine $virtualMachineName $isOnboarded
 }
 
 catch 

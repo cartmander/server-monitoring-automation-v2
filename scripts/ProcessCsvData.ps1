@@ -70,14 +70,14 @@ function BuildCsvData
 
 try
 {
-    Write-Output "Running the script..."
+    Write-Host "Running the script..." -ForegroundColor Green
 
     $csv = Import-Csv $csvFilePath
 
     $validatedCsv = ValidateCsv $csv
     ProcessCsv $validatedCsv
 
-    Write-Output "Done running the script..."
+    Write-Host "Done running the script..." -ForegroundColor Green
 }
 
 catch 
