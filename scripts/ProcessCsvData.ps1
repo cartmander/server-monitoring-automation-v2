@@ -63,7 +63,7 @@ function ProcessCsv
             $csvData = BuildCsvData $csvData $columnName $columnValue
         }
 
-        .\scripts\MonitoringAgentInstallation.ps1 
+        .\scripts\MonitoringAgentInstallation.ps1 `
         -subscription $csvData.Subscription `
         -resourceGroup $csvData.ResourceGroup `
         -virtualMachineName $csvData.VirtualMachineName `
