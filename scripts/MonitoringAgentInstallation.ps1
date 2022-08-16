@@ -15,10 +15,10 @@ param(
     [string] $workspaceKey,
 
     [Parameter(Mandatory=$true)]
-    [string] $currentCount,
+    [int] $currentCount,
 
     [Parameter(Mandatory=$true)]
-    [string] $total
+    [int] $total
 )
 
 function ValidateVirtualMachine
