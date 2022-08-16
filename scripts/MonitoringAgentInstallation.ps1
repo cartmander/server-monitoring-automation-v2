@@ -1,9 +1,6 @@
 param(
     [Parameter(Mandatory=$true)]
-    [string] $username,
-
-    [Parameter(Mandatory=$true)]
-    [string] $password,
+    [string] $subscription,
 
     [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
@@ -24,7 +21,7 @@ function ValidateVirtualMachines
     
     if ($null -eq $virtualMachines)
     {
-        Write-Error "Tag Value: $tagValue does not exist or does not have a running Windows virtual machine"
+        Write-Error "Query does not have a running Windows virtual machine"
         exit 1
     }
 
@@ -134,9 +131,7 @@ function DisplayOnboardedVirtualMachines
 
 try
 {
-    Write-Host "Running the script..."
-
-    az login -u $username -p $password
+    az account set --subscription $subscription
 
     $onboardedVirtualMachinesList = @()
     $virtualMachines = ValidateVirtualMachines
@@ -156,8 +151,6 @@ try
     } 
 
     DisplayOnboardedVirtualMachines $onboardedVirtualMachinesList
-
-    Write-Host "Done running the script..."
 }
 
 catch 
