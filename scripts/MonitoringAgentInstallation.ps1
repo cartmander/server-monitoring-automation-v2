@@ -106,7 +106,7 @@ try
     $virtualMachine = ValidateVirtualMachine
     $virtualMachineName = $virtualMachine.name
 
-    Write-Host "Onboarding virtual machine [$currentCount / $total]: $virtualMachineName..." -ForegroundColor Cyan
+    Write-Host "Onboarding virtual machine $virtualMachineName [$currentCount of $total]..." -ForegroundColor Cyan
     
     $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
     UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
