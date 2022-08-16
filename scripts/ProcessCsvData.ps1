@@ -23,6 +23,18 @@ function ValidateCsv
     return $csv
 }
 
+function BuildCsvData
+{
+    param(
+        [object] $csvData,
+        [string] $columnName,
+        [string] $columnValue
+    )
+
+    $csvData.Add($columnName, $columnValue)
+
+    return $csvData
+}
 function ProcessCsv
 {
     param(
@@ -53,19 +65,6 @@ function ProcessCsv
         -workspaceId $csvData.WorkspaceId `
         -workspaceKey $csvData.WorkspaceKey
     }
-}
-
-function BuildCsvData
-{
-    param(
-        [object] $csvData,
-        [string] $columnName,
-        [string] $columnValue
-    )
-
-    $csvData.Add($columnName, $columnValue)
-
-    return $csvData
 }
 
 try
