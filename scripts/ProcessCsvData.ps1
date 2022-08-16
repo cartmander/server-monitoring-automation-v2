@@ -49,7 +49,7 @@ function ProcessCsv
     )
 
     $counter = 0
-    $csvObject = Import-Csv "C:\" | Measure-Object
+    $csvObject = Import-Csv "csv/$filename" | Measure-Object
 
     foreach ($data in $csv)
     {
