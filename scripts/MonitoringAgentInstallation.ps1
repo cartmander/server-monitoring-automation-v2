@@ -15,7 +15,7 @@ param(
     [string] $workspaceKey
 )
 
-function ValidateVirtualMachines
+function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
     
@@ -26,7 +26,7 @@ function ValidateVirtualMachines
         exit 1
     }
 
-    return $virtualMachines
+    return $virtualMachine
 }
 
 function ListVirtualMachineWorkspaces
@@ -105,28 +105,27 @@ function ListOnboardedVirtualMachine
         'ResourceGroup' = $virtualMachine.resourceGroup
         'VirtualMachineName' = $virtualMachine.name
     }
-
-
+    
     return $onboardedVirtualMachine
 }
 
-function DisplayOnboardedVirtualMachines
+function DisplayOnboardedVirtualMachine
 {
     param(
-        [object[]] $onboardedVirtualMachinesList
+        [object] $onboardedVirtualMachine
     )
 
-    $vmCount = $onboardedVirtualMachinesList.Count
+    $virtualMachineName = $onboardedVirtualMachine.VirtualMachineName
 
-    if ($vmCount -ne 0)
+    if ($null -ne $onboardedVirtualMachine)
     {
-        Write-Host "List of Onboarded Virtual Machines: $vmCount virtual machines" -ForegroundColor Green
-        $onboardedVirtualMachinesList | Select-Object -Property ResourceGroup,VirtualMachineName | Sort-Object -Property ResourceGroup | Format-Table
+        Write-Host "Onboarded Virtual Machine:" -ForegroundColor Green
+        $onboardedVirtualMachine | Select-Object -Property ResourceGroup,VirtualMachineName | Sort-Object -Property ResourceGroup | Format-Table
     }
 
     else
     {
-        Write-Host "No virtual machines were onboarded" -ForegroundColor Yellow
+        Write-Host "Virtual machine: $virtualMachineName was not onboarded" -ForegroundColor Yellow
     }
 }
 
@@ -134,24 +133,19 @@ try
 {
     az account set --subscription $subscription
 
-    $onboardedVirtualMachinesList = @()
-    $virtualMachines = ValidateVirtualMachines
-    $counter = 0
-    
-    foreach ($virtualMachine in $virtualMachines)
+    $virtualMachine = ValidateVirtualMachine
+    $virtualMachineName = $virtualMachine.name
+
+    Write-Host "Onboarding in progress for virtual machine: $virtualMachineName..." -ForegroundColor Cyan
+    $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
+    $isOnboarded = UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+
+    if($isOnboarded)
     {
-        Write-Progress -Activity 'Processing Virtual Machine Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $virtualMachines.Count) * 100)
-        $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachine.name
-        $isOnboarded = UpdateVirtualMachineWorkspaces $virtualMachine.name $workspaceIdList
+        $onboardedVirtualMachine = ListOnboardedVirtualMachine $virtualMachine
+    }
 
-        if($isOnboarded)
-        {
-            $onboardedVirtualMachine = ListOnboardedVirtualMachine $virtualMachine
-            $onboardedVirtualMachinesList += $onboardedVirtualMachine
-        }
-    } 
-
-    DisplayOnboardedVirtualMachines $onboardedVirtualMachinesList
+    DisplayOnboardedVirtualMachine $onboardedVirtualMachine
 }
 
 catch 

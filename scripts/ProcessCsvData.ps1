@@ -39,13 +39,17 @@ try
     Write-Output "Running the script..."
 
     $csv = Import-Csv $csvFilePath
+    $csvCount = Import-Csv $csv | Measure-Object
 
     ValidateCsv $csv
 
+    $counter = 0
     foreach ($data in $csv)
-    { 
+    {
         $column = $data | Get-Member -MemberType Properties
         $csvData = @{}
+
+        Write-Progress -Activity 'Processing Virtual Machines Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $csvCount) * 100) 
 
         for($i = 0; $i -lt $column.Count; $i++)
         {
