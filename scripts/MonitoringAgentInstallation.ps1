@@ -38,7 +38,7 @@ function ListVirtualMachineWorkspaces
     $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript `
     --name $virtualMachineName `
     --resource-group $resourceGroup `
-    --scripts "@run-commands/GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
+    --scripts "@C:\\scripts\ServerOnboardingAutomation\GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
 
     $workspaceIdList = $getWorkspaces.value[0].message.Split()
 
@@ -81,13 +81,13 @@ function UpdateVirtualMachineWorkspaces
         az vm run-command invoke --command-id RunPowerShellScript `
         --name $virtualMachineName `
         --resource-group $resourceGroup `
-        --scripts "@run-commands/OnboardVirtualMachine.ps1" `
+        --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
 
         az vm run-command invoke --command-id RunPowerShellScript `
         --name $virtualMachineName `
         --resource-group $resourceGroup `
-        --scripts "@run-commands/EnableMachineReadiness.ps1"
+        --scripts "@C:\\scripts\ServerOnboardingAutomation\EnableMachineReadiness.ps1"
 
         Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }

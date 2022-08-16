@@ -1,5 +1,12 @@
 param(
-    [string] $csvFilePath = "C:\Users\kevin3349\Downloads\VirtualMachines.csv"
+    [Parameter(Mandatory=$true)]
+    [string] $username,
+
+    [Parameter(Mandatory=$true)]
+    [string] $password,
+
+    [Parameter(Mandatory=$true)]
+    [string] $filename
 )
 
 function ValidateCsv
@@ -42,7 +49,7 @@ function ProcessCsv
     )
 
     $counter = 0
-    $csvObject = Import-Csv $csvFilePath | Measure-Object
+    $csvObject = Import-Csv "C:\" | Measure-Object
 
     foreach ($data in $csv)
     {
@@ -69,9 +76,11 @@ function ProcessCsv
 
 try
 {
+    az login -u $username -p $password
+
     Write-Host "Running the script..." -ForegroundColor Green
 
-    $csv = Import-Csv $csvFilePath
+    $csv = Import-Csv "C:/scripts/ServerOnboardingAutomation/$filename.csv"
 
     $validatedCsv = ValidateCsv $csv
     ProcessCsv $validatedCsv

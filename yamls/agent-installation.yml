@@ -5,13 +5,7 @@ parameters:
     type: string
   - name: password
     type: string
-  - name: resourceGroup
-    type: string
-  - name: tagValue
-    type: string
-  - name: workspaceId
-    type: string
-  - name: workspaceKey
+  - name: filename
     type: string
 
 pool: IRRNDG-AUTOMATION-POOL
@@ -21,13 +15,20 @@ steps:
     displayName: 'Copy Run Command Scripts to Virtual Machine'
     inputs:
       sourceFolder: "$(System.DefaultWorkingDirectory)/scripts/run-commands"
-      targetFolder: "C:/scripts/AgentInstallationAutomationv2"
+      targetFolder: "C:/scripts/ServerOnboardingAutomation"
+      overWrite: true
+
+  - task: CopyFiles@2
+    displayName: 'Copy CSV to Virtual Machine'
+    inputs:
+      sourceFolder: "$(System.DefaultWorkingDirectory)/csv"
+      targetFolder: "C:/scripts/ServerOnboardingAutomation"
       overWrite: true
 
   - task: AzureCLI@2
-    displayName: 'Install Agent on Virtual Machines by Tagging'
+    displayName: 'Server Onboarding Automation'
     inputs:
       azureSubscription: ICO-DEV-SERVICE-CONN
       scriptType: ps
       scriptPath: '$(System.DefaultWorkingDirectory)/scripts/MonitoringAgentInstallation.ps1'
-      arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }} -resourceGroup ${{ parameters.resourceGroup }} -tagValue ${{ parameters.tagValue }} -workspaceId ${{ parameters.workspaceId }} -workspaceKey ${{ parameters.workspaceKey }}'
+      arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }} -filename ${{ parameters.filename }}'
