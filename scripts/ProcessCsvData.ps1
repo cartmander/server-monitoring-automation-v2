@@ -80,7 +80,7 @@ try
 
     Write-Host "Running the script..." -ForegroundColor Green
 
-    $csv = Import-Csv "C:/scripts/ServerOnboardingAutomation/$filename.csv"
+    $csv = Import-Csv "C:/scripts/ServerOnboardingAutomation/$filename"
 
     $validatedCsv = ValidateCsv $csv
     ProcessCsv $validatedCsv
