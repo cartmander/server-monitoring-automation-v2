@@ -18,13 +18,6 @@ steps:
       targetFolder: "C:/scripts/ServerOnboardingAutomation"
       overWrite: true
 
-  - task: CopyFiles@2
-    displayName: 'Copy CSV to Virtual Machine'
-    inputs:
-      sourceFolder: "$(System.DefaultWorkingDirectory)/csv"
-      targetFolder: "C:/scripts/ServerOnboardingAutomation"
-      overWrite: true
-
   - task: AzureCLI@2
     displayName: 'Server Onboarding Automation'
     inputs:
