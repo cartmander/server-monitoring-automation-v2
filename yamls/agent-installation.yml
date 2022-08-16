@@ -30,5 +30,5 @@ steps:
     inputs:
       azureSubscription: ICO-DEV-SERVICE-CONN
       scriptType: ps
-      scriptPath: '$(System.DefaultWorkingDirectory)/scripts/MonitoringAgentInstallation.ps1'
+      scriptPath: '$(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1'
       arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }} -filename ${{ parameters.filename }}'
