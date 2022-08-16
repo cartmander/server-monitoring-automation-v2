@@ -3,10 +3,7 @@ param(
     [string] $username,
 
     [Parameter(Mandatory=$true)]
-    [string] $password,
-
-    [Parameter(Mandatory=$true)]
-    [string] $filename
+    [string] $password
 )
 
 function ValidateCsv
@@ -49,7 +46,7 @@ function ProcessCsv
     )
 
     $counter = 0
-    $csvObject = Import-Csv "csv/$filename" | Measure-Object
+    $csvObject = Import-Csv "csv/VirtualMachines.csv" | Measure-Object
 
     foreach ($data in $csv)
     {
@@ -80,7 +77,7 @@ try
 
     Write-Host "Running the script..." -ForegroundColor Green
 
-    $csv = Import-Csv "csv/$filename"
+    $csv = Import-Csv "csv/VirtualMachines.csv"
 
     $validatedCsv = ValidateCsv $csv
     ProcessCsv $validatedCsv
