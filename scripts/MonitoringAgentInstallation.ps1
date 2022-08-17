@@ -90,11 +90,6 @@ function UpdateVirtualMachineWorkspaces
         --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
         --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
 
-        az vm run-command invoke --command-id RunPowerShellScript `
-        --name $virtualMachineName `
-        --resource-group $resourceGroup `
-        --scripts "@C:\\scripts\ServerOnboardingAutomation\EnableMachineReadiness.ps1"
-
         Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }
 }
