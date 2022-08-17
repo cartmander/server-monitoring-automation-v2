@@ -3,7 +3,6 @@ param(
     [string] $workspaceKey
 )
 
-# Enable Machine Readiness
 begin 
 {
     try 
@@ -34,10 +33,10 @@ process
 {
     try
     {
-    # Add Workspace on Virtual Machine
-    $agent = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
-    $agent.AddCloudWorkspace($workspaceId, $workspaceKey)
-    $agent.ReloadConfiguration()
+        # Add Workspace on Virtual Machine
+        $agent = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
+        $agent.AddCloudWorkspace($workspaceId, $workspaceKey)
+        $agent.ReloadConfiguration()
     }
 
     catch
@@ -68,7 +67,6 @@ process
     {
         Write-Warning "$($error[0].Exception.Message)"
     }
-
 
     try 
     {
@@ -106,6 +104,7 @@ process
         Write-Warning "$($error[0].Exception.Message)"
     }
 
+    # Enable Machine Readiness
     $StartingServiceTime = (Get-Date).AddSeconds(30)
     Start-Service HealthService
 
