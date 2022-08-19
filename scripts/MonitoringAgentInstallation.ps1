@@ -24,8 +24,8 @@ param(
 function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
-    
-    if ($null -eq $virtualMachine)
+
+    if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
     {
         Write-Error "Query: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
         Write-Error "Query does not have a running Windows virtual machine or does not exist"

@@ -76,7 +76,7 @@ function ProcessCsv
 
 try
 {
-    az login -u $username -p $password
+    az login -u $username | Out-String -p $password | Out-String
 
     Write-Host "Initializing automation..." -ForegroundColor Green
 
