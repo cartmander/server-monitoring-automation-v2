@@ -1,5 +1,11 @@
 trigger: none
 
+parameters:
+  - name: username
+    type: string
+  - name: password
+    type: string
+
 stages:
 - stage: Build
   jobs:
