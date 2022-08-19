@@ -49,7 +49,7 @@ process
         # Remove From SCCM Collection
         $Today = [datetime]::Today.ToString('MM/dd/yyyy')
         $WTWRegPath = "HKLM:\SOFTWARE\WTW\Patching"
-        $PatchSchd = "AZR-UPD-MGR"
+        $PatchSchd = "AZR-UPD-MGR-CEG"
         $RequestedBy = "Cloud Ops Team"
 
         if (!(Test-Path $WTWRegPath)) {
