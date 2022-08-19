@@ -1,11 +1,3 @@
-param(
-    [Parameter(Mandatory=$true)]
-    [string] $username,
-
-    [Parameter(Mandatory=$true)]
-    [string] $password
-)
-
 function ValidateCsv
 {
     param(
