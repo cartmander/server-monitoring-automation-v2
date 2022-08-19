@@ -27,7 +27,7 @@ function ValidateVirtualMachine
 
     if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
     {
-        Write-Error "Query: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
+        Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
         Write-Error "Query does not have a running Windows virtual machine or does not exist"
         exit 1
     }
