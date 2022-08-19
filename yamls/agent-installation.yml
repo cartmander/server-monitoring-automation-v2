@@ -1,11 +1,5 @@
 trigger: none
 
-parameters:
-  - name: username
-    type: string
-  - name: password
-    type: string
-
 stages:
 - stage: Build
   jobs:
@@ -26,4 +20,3 @@ stages:
           azureSubscription: ICO-DEV-SERVICE-CONN
           scriptType: ps
           scriptPath: '$(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1'
-          arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }}'
