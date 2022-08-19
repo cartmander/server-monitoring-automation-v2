@@ -1,3 +1,11 @@
+param(
+    [Parameter(Mandatory=$true)]
+    [string] $username,
+
+    [Parameter(Mandatory=$true)]
+    [string] $password
+)
+
 function ValidateCsv
 {
     param(
@@ -68,7 +76,8 @@ function ProcessCsv
 
 try
 {
-    az login -u "kevin3349_adm@willistowerswatson.com" -p "MaximumOverdrive07#"
+
+    az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
 
