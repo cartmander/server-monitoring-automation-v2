@@ -29,19 +29,19 @@ In the future, we are going to use a service principal instead of using our ADM 
 
 Finally, click Run and let the pipeline run the automation and wait for it to be finished.
 
-## Expected Output
+## Expected Output:
 
 By the end of pipeline run, if no errors were found along the way, you should expect the list of servers to be onboarded to its assigned Log Analytics Workspace along with a few scripts that we usually run in the portal:
 - Removal of Atos scheduled patching for SCCM
 - Machine Readiness
 
-## How to Verify?
+## How to Verify?:
 
-you can verify if the servers youre onboarded properly by doing the following options:
+You can verify if the servers youre onboarded properly by doing the following options:
 - If the Log Analytics Workspace is connected to an Automation Account, go to the Automation Account and you should see the servers under Update management.
 - You can query the servers in the Logs of Log Analytics Workspace.
 
-## Notes that are highly recommended to follow
+## Guidelines to follow:
 - Before you use the automation, make sure the necessary access is already set (ex. PIM activation). you can only onboard servers that our ADM accounts have access to. Otherwise, the automation will not see the resources.
 - You can only onboard running Windows servers. Linux and stopped servers will not be onboarded.
 - Run the automation with a max of 30 servers only. Though the pipeline can run up to 6 hours. It's highly recommended to onboard the servers in batches.
