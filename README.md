@@ -1,10 +1,3 @@
-# Azure Agent Installation Automation
+# Server Onboarding Automation
 
-Running this Powershell script will allow you to add or update your virtual Machine/s to a certain scope of Virtual Machines under a current subscription in Azure.
-## Parameters
-
----
-
-## Expected Output
-
----
+- Please use feature/AutoOnboarding branch while automation QA testing is still ongoing
