@@ -42,7 +42,7 @@ You can verify if the servers youre onboarded properly by doing the following op
 - If the Log Analytics Workspace is connected to an Automation Account, go to the Automation Account and you should see the servers under Update management.
 - You can query the servers in the Logs of Log Analytics Workspace.
 
-## Guidelines to follow:
+## Guidelines to Follow:
 - Before you use the automation, make sure the necessary access is already set (ex. PIM activation). You can only onboard servers that our ADM accounts have access to. Otherwise, the automation will not see the resources.
 - Your ADM account password is not yet expired.
 - You can only onboard running Windows servers. Linux and stopped servers will not be onboarded.
