@@ -43,7 +43,7 @@ You can verify if the servers youre onboarded properly by doing the following op
 - You can query the servers in the Logs of Log Analytics Workspace.
 
 ## Guidelines to follow:
-- Before you use the automation, make sure the necessary access is already set (ex. PIM activation). you can only onboard servers that our ADM accounts have access to. Otherwise, the automation will not see the resources.
+- Before you use the automation, make sure the necessary access is already set (ex. PIM activation). You can only onboard servers that our ADM accounts have access to. Otherwise, the automation will not see the resources.
 - You can only onboard running Windows servers. Linux and stopped servers will not be onboarded.
 - Run the automation with a max of 30 servers only. Though the pipeline can run up to 6 hours. It's highly recommended to onboard the servers in batches.
 - When modifying a csv file, make sure to pass the actual casing of the resource groups and server names (except subscription) you see in Azure portal. For some reasons, Azure CLI queries are case-sensitive. (ex. In Azure Portal: n20-os-vscn001d, so in CSV, it should be n20-os-vscn001d as youll and not N20-OS-VSCN001D)
