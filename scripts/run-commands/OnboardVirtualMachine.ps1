@@ -46,7 +46,7 @@ process
 
     try
     {
-        # Remove From SCCM Collection
+        # Removal of Atos scheduled patching for SCCM
         $Today = [datetime]::Today.ToString('MM/dd/yyyy')
         $WTWRegPath = "HKLM:\SOFTWARE\WTW\Patching"
         $PatchSchd = "AZR-UPD-MGR-CEG"
