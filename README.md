@@ -2,7 +2,7 @@
 
 This is the unofficial Server Onboarding tool (testing phase)
 
-## How to Use?: Repository
+## How to Use: Repository
 
 Make sure you branch out from "feature/AutoOnboarding" branch by going to the branch dropdown and selecting "+ New Branch".
 
@@ -17,7 +17,7 @@ Provide the following:
 - Go to the file and paste in the csv contents you copied.
 - Click commit to save the changes under your newly created branch.
 
-## How to Use?: Pipeline
+## How to Use: Pipeline
 Go to the designated pipeline of this repository:
 https://dev.azure.com/wtw-irrndg/Indigo%20Cloud%20Operations/_build?definitionId=241
 
