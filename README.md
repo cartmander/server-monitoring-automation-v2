@@ -7,7 +7,7 @@ This is the official Server Onboarding tool
 Make sure you branch out from "feature/AutoOnboarding" branch by going to the branch dropdown and selecting "+ New Branch".
 
 Provide the following:
-- Name - feature/{your_name}{date}{time} (ex. feature/Kevin)
+- Name - feature/{your_name}{date}{time} (ex. feature/Kevin82020221227PM)
 - Based on - feature/AutoOnboarding
 
 Open a csv on your local, then plot out the necessary servers to onboard. You may download the csv in the repository to know the properties that you need to provide.
@@ -31,7 +31,7 @@ Finally, click Run and let the pipeline run the automation and wait for it to be
 
 ## Expected Output:
 
-By the end of pipeline run, if no errors were found along the way, you should expect the list of servers to be onboarded to its assigned Log Analytics Workspace along with a few scripts that we usually run in the portal:
+By the end of a pipeline run, if no errors were found along the way, you should expect the list of servers to be onboarded to its assigned Log Analytics Workspace along with a few scripts that we usually run in the portal:
 - Removal of Atos scheduled patching for SCCM
 - Machine Readiness
 
