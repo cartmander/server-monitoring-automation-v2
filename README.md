@@ -1,3 +1,3 @@
 # Server Onboarding Automation
 
-- Please use feature/AutoOnboarding branch while automation QA testing is still ongoing
+- Please use the feature/AutoOnboarding branch instead while we're are still testing the enhancements. The merge of this branch to master will be announced.
