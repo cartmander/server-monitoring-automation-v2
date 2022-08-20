@@ -36,7 +36,7 @@ By the end of a pipeline run, if no errors were found along the way, you should 
 - Removal of Atos scheduled patching for SCCM
 - Machine Readiness
 
-## How to Verify?:
+## How to Verify:
 
 You can verify if the servers youre onboarded properly by doing the following options:
 - If the Log Analytics Workspace is connected to an Automation Account, go to the Automation Account and you should see the servers under Update management.
@@ -45,7 +45,7 @@ You can verify if the servers youre onboarded properly by doing the following op
 ## Guidelines to follow:
 - Before you use the automation, make sure the necessary access is already set (ex. PIM activation). You can only onboard servers that our ADM accounts have access to. Otherwise, the automation will not see the resources.
 - You can only onboard running Windows servers. Linux and stopped servers will not be onboarded.
-- Run the automation with a max of 30 servers only. Though the pipeline can run up to 6 hours. It's highly recommended to onboard the servers in batches.
+- Run the automation with a max of 30 servers only. Though the pipeline can run up to 6 hours, it's highly recommended to onboard the servers in batches.
 - When modifying a csv file, make sure to pass the actual casing of the resource groups and server names (except subscription) you see in Azure portal. For some reasons, Azure CLI queries are case-sensitive. (ex. In Azure Portal: n20-os-vscn001d, so in CSV, it should be n20-os-vscn001d as well and not N20-OS-VSCN001D)
 - The pipeline has 4 agents that are running in the cloud and can run asynchronously. If all agents are busy, the following pipeline executions will have to queue and wait.
 - Make sure you don't have conflicting server assignments when onboarding to avoid pipeline execution failures.
