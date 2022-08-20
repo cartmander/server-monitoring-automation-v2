@@ -10,11 +10,11 @@ Provide the following:
 - Name - feature/{your_name}{date}{time} (ex. feature/Kevin82020221227PM)
 - Based on - feature/AutoOnboarding
 
-Open a csv on your local, then plot out the necessary servers to onboard. You may download the csv in the repository to know the properties that you need to provide.
-Save the csv, then edit it on a notepad, then copy everything.
-Go back to the repository and look for "csv/VirtualMachines.csv". 
-Go to the file and paste in the csv contents you copied.
-Click commit to save the changes under your newly created branch.
+- Open a csv on your local, then plot out the necessary servers to onboard. You may download the csv in the repository to know the properties that you need to provide.
+- Save the csv, then edit it on a notepad, then copy everything.
+- Go back to the repository and look for "csv/VirtualMachines.csv". 
+- Go to the file and paste in the csv contents you copied.
+- Click commit to save the changes under your newly created branch.
 
 ## How to Use?: Pipeline
 Go to the designated pipeline of this repository:
