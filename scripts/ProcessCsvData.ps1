@@ -39,6 +39,7 @@ function BuildCsvData
 
     return $csvData
 }
+
 function ProcessCsv
 {
     param(
@@ -58,7 +59,7 @@ function ProcessCsv
         for($i = 0; $i -lt $column.Count; $i++)
         {
             $columnName = $column[$i].Name
-            $columnValue = $data | Select-Object -ExpandProperty $columnName
+            $columnValue = $data | Select-Object -ExpandProperty $columnName | ToLower | Replace(" ", "")
 
             $csvData = BuildCsvData $csvData $columnName $columnValue
         }
