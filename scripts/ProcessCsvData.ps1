@@ -61,11 +61,6 @@ function ProcessCsv
             $columnName = $column[$i].Name
             $columnValue = $data | Select-Object -ExpandProperty $columnName
 
-            if($columnName -ne "Subscription")
-            {
-                $columnValue = $columnValue.ToLower().Replace(" ", "")
-            }
-
             $csvData = BuildCsvData $csvData $columnName $columnValue
         }
 
