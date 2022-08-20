@@ -1,6 +1,6 @@
 # Server Onboarding Automation
 
-This is the official Server Onboarding tool
+This is the unofficial Server Onboarding tool (testing phase)
 
 ## How to Use?: Repository
 
