@@ -59,7 +59,7 @@ function ProcessCsv
         for($i = 0; $i -lt $column.Count; $i++)
         {
             $columnName = $column[$i].Name
-            $columnValue = $data | Select-Object -ExpandProperty $columnName | ToLower | Replace(" ", "")
+            $columnValue = $data | Select-Object -ExpandProperty $columnName
             $columnValue = $columnValue.ToLower().Replace(" ", "")
 
             $csvData = BuildCsvData $csvData $columnName $columnValue
