@@ -45,26 +45,24 @@ begin
 
 process
 {
+    # Enable Machine Readiness
     try 
     {
-        Stop-Service HealthService -Verbose
+        $StoppingServiceTime = (Get-Date).AddSeconds(15)
+
+        do 
+        {
+            Stop-Service HealthService -Verbose
+            Write-Host "Waiting for Service to be stopped completely before continuing"
+            $ServiceStatus = (Get-Service -Name HealthService).Status
+        } 
+        until ($ServiceStatus -eq "Stopped" -or (New-TimeSpan -End $StoppingServiceTime))
     }
 
     catch 
     {
         Write-Error "$($error[0].Exception.Message)"
-        Write-Host "Stopping script. We need to stop the HealthService properly."
-        break
     }
-
-    $StoppingServiceTime = (Get-Date).AddSeconds(30)
-
-    do 
-    {
-        Write-Host "Waiting for Service to be stopped completely before continuing"
-        $ServiceStatus = (Get-Service -Name HealthService).Status
-    } 
-    until ($ServiceStatus -eq "Stopped" -or (New-TimeSpan -End $StoppingServiceTime))
 
     Write-Host "HealthService is now $ServiceStatus, SCOM monitoring will be stopped as well." -ForegroundColor Yellow
 
@@ -84,7 +82,6 @@ process
 
     try 
     {
-
         $currentuser = whoami.exe
         $acl = Get-Acl "C:\Program Files\Microsoft Monitoring Agent\Agent\Health Service State"
         $AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule($currentuser, "FullControl", "Allow")
@@ -104,21 +101,24 @@ process
         Write-Warning "$($error[0].Exception.Message)"
     }
 
-    # Enable Machine Readiness
-    $StartingServiceTime = (Get-Date).AddSeconds(30)
-    Start-Service HealthService
-
-    do 
+    try 
     {
-        Write-Host "Waiting for HealthService to be started completely before continuing"
-        $StartedServiceStatus = (Get-Service -Name HealthService).Status
-    } 
-    until ($StartedServiceStatus -eq "Running" -or (New-TimeSpan -End $StartingServiceTime))
+        $StartingServiceTime = (Get-Date).AddSeconds(15)
+
+        do 
+        {
+            Start-Service HealthService
+            Write-Host "Waiting for HealthService to be started completely before continuing"
+            $StartedServiceStatus = (Get-Service -Name HealthService).Status
+        } 
+        until ($StartedServiceStatus -eq "Running" -or (New-TimeSpan -End $StartingServiceTime))
+    }
+
+    catch 
+    {
+        Write-Error "$($error[0].Exception.Message)"
+    }
 
     Write-Host "HealthService is now $($StartedServiceStatus) , SCOM monitoring will be resumed as well." -ForegroundColor Green
-}
-
-end 
-{
     Write-Host "Script completed. Please check the Azure Automation account SYSTEM Hybrid workers" -ForegroundColor Green
 }
