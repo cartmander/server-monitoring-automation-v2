@@ -5,32 +5,6 @@ param(
 
 begin 
 {
-    try 
-    {
-        Stop-Service HealthService -Verbose
-    }
-
-    catch 
-    {
-        Write-Error "$($error[0].Exception.Message)"
-        Write-Host "Stopping script. We need to stop the HealthService properly."
-        break
-    }
-
-    $StoppingServiceTime = (Get-Date).AddSeconds(30)
-
-    do 
-    {
-        Write-Host "Waiting for Service to be stopped completely before continuing"
-        $ServiceStatus = (Get-Service -Name HealthService).Status
-    } 
-    until ($ServiceStatus -eq "Stopped" -or (New-TimeSpan -End $StoppingServiceTime))
-
-    Write-Host "HealthService is now $ServiceStatus, SCOM monitoring will be stopped as well." -ForegroundColor Yellow
-}
-
-process
-{
     try
     {
         # Add Workspace on Virtual Machine
@@ -67,6 +41,32 @@ process
     {
         Write-Warning "$($error[0].Exception.Message)"
     }
+}
+
+process
+{
+    try 
+    {
+        Stop-Service HealthService -Verbose
+    }
+
+    catch 
+    {
+        Write-Error "$($error[0].Exception.Message)"
+        Write-Host "Stopping script. We need to stop the HealthService properly."
+        break
+    }
+
+    $StoppingServiceTime = (Get-Date).AddSeconds(30)
+
+    do 
+    {
+        Write-Host "Waiting for Service to be stopped completely before continuing"
+        $ServiceStatus = (Get-Service -Name HealthService).Status
+    } 
+    until ($ServiceStatus -eq "Stopped" -or (New-TimeSpan -End $StoppingServiceTime))
+
+    Write-Host "HealthService is now $ServiceStatus, SCOM monitoring will be stopped as well." -ForegroundColor Yellow
 
     try 
     {
@@ -117,7 +117,6 @@ process
 
     Write-Host "HealthService is now $($StartedServiceStatus) , SCOM monitoring will be resumed as well." -ForegroundColor Green
 }
-
 
 end 
 {
