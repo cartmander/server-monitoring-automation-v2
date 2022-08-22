@@ -32,7 +32,7 @@ Finally, click Run and let the pipeline run the automation and wait for it to be
 
 ## Expected Output:
 
-By the end of a pipeline run, if no errors were found, you should expect the list of servers to be onboarded to their assigned Log Analytics Workspace. The following scripts that we usually run on servers in the portal were executed as well:
+By the end of a pipeline run, if no errors were found, you should expect the list of servers to be onboarded to their assigned Log Analytics Workspace. The following scripts that we usually run on servers in the portal should have executed as well:
 - Removal of Atos scheduled patching for SCCM
 - Machine Readiness
 
