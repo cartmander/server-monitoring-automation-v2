@@ -38,7 +38,7 @@ By the end of a pipeline run, if no errors were found, you should expect the lis
 
 ## How to Verify:
 
-You can verify if the servers youre onboarded properly by doing the following options:
+You can verify if the servers were onboarded properly by doing the following options:
 - If the Log Analytics Workspace is connected to an Automation Account, go to the Automation Account and you should see the servers under Update management.
 - You can query the servers in the Logs of Log Analytics Workspace.
 
