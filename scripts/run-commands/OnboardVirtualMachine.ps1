@@ -120,5 +120,10 @@ process
     }
 
     Write-Host "HealthService is now $($StartedServiceStatus) , SCOM monitoring will be resumed as well." -ForegroundColor Green
+    
+}
+
+end
+{
     Write-Host "Script completed. Please check the Azure Automation account SYSTEM Hybrid workers" -ForegroundColor Green
 }
