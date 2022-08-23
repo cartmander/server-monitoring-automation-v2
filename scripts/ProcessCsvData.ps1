@@ -25,25 +25,12 @@ function ValidateCsv
     }
 }
 
-function ProcessCsv
+function ProcessCsvRow
 {
     param(
         [object] $csv
     )
 
-    foreach ($data in $csv)
-    {
-        $column = $data | Get-Member -MemberType Properties
-        $csvData = @{}
- 
-
-        for($i = 0; $i -lt $column.Count; $i++)
-        {
-            $columnName = $column[$i].Name
-            $columnValue = $data | Select-Object -ExpandProperty $columnName
-
-            $csvData = BuildCsvData $csvData $columnName $columnValue
-        }
 
         .\scripts\MonitoringAgentInstallation.ps1 `
         -subscription $csvData.Subscription `
@@ -53,7 +40,6 @@ function ProcessCsv
         -workspaceKey $csvData.WorkspaceKey `
         -currentCount $counter `
         -total $csvObject.Count
-    }
 }
 
 try
