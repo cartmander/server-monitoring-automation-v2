@@ -27,19 +27,6 @@ function ValidateCsv
     return $csv
 }
 
-function BuildCsvData
-{
-    param(
-        [object] $csvData,
-        [string] $columnName,
-        [string] $columnValue
-    )
-
-    $csvData.Add($columnName, $columnValue)
-
-    return $csvData
-}
-
 function ProcessCsv
 {
     param(
