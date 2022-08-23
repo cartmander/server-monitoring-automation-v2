@@ -30,16 +30,15 @@ function ProcessCsvRow
     param(
         [object] $csv
     )
+    $MMAInstallationParameters = @{
+    "subscription" = $csv.Subscription 
+    "resourceGroup" = $csv.ResourceGroup 
+    "virtualMachineName" = $csv.VirtualMachineName 
+    "workspaceId" = $csv.WorkspaceId
+    "workspaceKey" = $csv.WorkspaceKey
+    }
 
-
-        .\scripts\MonitoringAgentInstallation.ps1 `
-        -subscription $csvData.Subscription `
-        -resourceGroup $csvData.ResourceGroup `
-        -virtualMachineName $csvData.VirtualMachineName `
-        -workspaceId $csvData.WorkspaceId `
-        -workspaceKey $csvData.WorkspaceKey `
-        -currentCount $counter `
-        -total $csvObject.Count
+    .\scripts\MonitoringAgentInstallation.ps1 $MMAInstallationParameters
 }
 
 try
