@@ -86,7 +86,7 @@ function UpdateVirtualMachineWorkspaces
     --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
     --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey" "shouldAddWorkspace=$shouldAddWorkspace"
 
-    if($shouldAddWorkspace -eq "true")
+    if ($shouldAddWorkspace -eq "true")
     {
         Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }
