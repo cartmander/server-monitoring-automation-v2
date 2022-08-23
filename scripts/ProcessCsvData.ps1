@@ -32,7 +32,6 @@ function ProcessCsv
     )
 
     $counter = 0
-    $csvObject = Import-Csv "csv/VirtualMachines.csv" | Measure-Object
 
     foreach ($data in $csv)
     {
