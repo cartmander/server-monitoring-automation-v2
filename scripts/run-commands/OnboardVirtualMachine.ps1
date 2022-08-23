@@ -52,7 +52,7 @@ process
     # Enable Machine Readiness
     try 
     {
-        $StoppingServiceTime = (Get-Date).AddSeconds(15)
+        $StoppingServiceTime = (Get-Date).AddSeconds(30)
 
         do 
         {
@@ -107,7 +107,7 @@ process
 
     try 
     {
-        $StartingServiceTime = (Get-Date).AddSeconds(15)
+        $StartingServiceTime = (Get-Date).AddSeconds(30)
 
         do 
         {
