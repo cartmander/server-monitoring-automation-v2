@@ -31,8 +31,6 @@ function ProcessCsv
         [object] $csv
     )
 
-    $counter = 0
-
     foreach ($data in $csv)
     {
         $column = $data | Get-Member -MemberType Properties
