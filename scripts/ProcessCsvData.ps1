@@ -50,7 +50,10 @@ try
 
     $csv = Import-Csv "csv/VirtualMachines.csv"
     ValidateCsv $csv
-    ProcessCsv $validatedCsv
+    $csv | ForEach-Object -Process {
+        ProcessCsvRow $_
+    } 
+    
 
     Write-Host "Done running the automation..." -ForegroundColor Green
 }
