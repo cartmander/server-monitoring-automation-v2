@@ -2,12 +2,12 @@ param(
     [string] $workspaceId,
     [string] $workspaceKey,
     [string] $virtualMachineName,
-    [bool] $shouldAddWorkspace
+    [string] $shouldAddWorkspace
 )
 
 begin 
 {
-    if ($shouldAddWorkspace)
+    if ($shouldAddWorkspace.ToBoolean())
     {
         try
         {
