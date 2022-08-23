@@ -1,7 +1,6 @@
 param(
     [string] $workspaceId,
     [string] $workspaceKey,
-    [string] $virtualMachineName,
     [string] $shouldAddWorkspace
 )
 
@@ -21,8 +20,6 @@ begin
         {
             Write-Warning "$($error[0].Exception.Message)"
         }
-
-        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }
 
     try
