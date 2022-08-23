@@ -1,7 +1,7 @@
 param(
     [string] $workspaceId,
     [string] $workspaceKey,
-    [string] $shouldAddWorkspace
+    [string] $shouldAddWorkspace # For some reasons, run-command can't take in boolean arguments
 )
 
 begin 
