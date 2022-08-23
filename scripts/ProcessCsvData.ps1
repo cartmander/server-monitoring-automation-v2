@@ -37,8 +37,7 @@ function ProcessCsv
     {
         $column = $data | Get-Member -MemberType Properties
         $csvData = @{}
-
-        Write-Progress -Activity 'Processing Virtual Machines Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $csvObject.Count) * 100) 
+ 
 
         for($i = 0; $i -lt $column.Count; $i++)
         {
