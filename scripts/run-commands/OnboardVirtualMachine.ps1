@@ -1,21 +1,28 @@
 param(
     [string] $workspaceId,
-    [string] $workspaceKey
+    [string] $workspaceKey,
+    [string] $virtualMachineName,
+    [bool] $shouldAddWorkspace
 )
 
 begin 
 {
-    try
+    if ($shouldAddWorkspace)
     {
-        # Add Workspace on Virtual Machine
-        $agent = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
-        $agent.AddCloudWorkspace($workspaceId, $workspaceKey)
-        $agent.ReloadConfiguration()
-    }
+        try
+        {
+            # Add Workspace on Virtual Machine
+            $agent = New-Object -ComObject 'AgentConfigManager.MgmtSvcCfg'
+            $agent.AddCloudWorkspace($workspaceId, $workspaceKey)
+            $agent.ReloadConfiguration()
+        }
+    
+        catch
+        {
+            Write-Warning "$($error[0].Exception.Message)"
+        }
 
-    catch
-    {
-        Write-Warning "$($error[0].Exception.Message)"
+        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
     }
 
     try

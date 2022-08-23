@@ -80,18 +80,11 @@ function UpdateVirtualMachineWorkspaces
         }
     }
 
-    $shouldOnboard = $workspaceIdList.Count -lt 4 -and $shouldAddWorkspace
-
-    if ($shouldOnboard)
-    {
-        az vm run-command invoke --command-id RunPowerShellScript `
-        --name $virtualMachineName `
-        --resource-group $resourceGroup `
-        --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
-        --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey"
-
-        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
-    }
+    az vm run-command invoke --command-id RunPowerShellScript `
+    --name $virtualMachineName `
+    --resource-group $resourceGroup `
+    --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
+    --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey" "virtualMachineName= $virtualMachineName" "shouldAddWorkspace=$shouldAddWorkspace"
 }
 
 try
