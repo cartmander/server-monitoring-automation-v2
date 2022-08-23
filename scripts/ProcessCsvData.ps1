@@ -23,8 +23,6 @@ function ValidateCsv
             exit 1
         }
     }
-
-    return $csv
 }
 
 function ProcessCsv
