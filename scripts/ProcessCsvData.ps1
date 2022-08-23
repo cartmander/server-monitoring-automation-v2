@@ -49,8 +49,7 @@ try
     Write-Host "Initializing automation..." -ForegroundColor Green
 
     $csv = Import-Csv "csv/VirtualMachines.csv"
-
-    $validatedCsv = ValidateCsv $csv
+    ValidateCsv $csv
     ProcessCsv $validatedCsv
 
     Write-Host "Done running the automation..." -ForegroundColor Green
