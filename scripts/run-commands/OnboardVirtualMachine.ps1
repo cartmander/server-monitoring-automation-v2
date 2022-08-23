@@ -7,7 +7,7 @@ param(
 
 begin 
 {
-    if ($shouldAddWorkspace.ToBoolean())
+    if ($shouldAddWorkspace -eq "true")
     {
         try
         {

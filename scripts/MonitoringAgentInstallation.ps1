@@ -58,7 +58,7 @@ function UpdateVirtualMachineWorkspaces
         [string[]] $workspaceIdList
     )
 
-    $shouldAddWorkspace = $true
+    $shouldAddWorkspace = "true"
 
     if ($workspaceIdList.Count -gt 3) 
     {
@@ -72,7 +72,7 @@ function UpdateVirtualMachineWorkspaces
         {
             if ($id -eq $workspaceId)
             {
-                $shouldAddWorkspace = $false
+                $shouldAddWorkspace = "false"
 
                 Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName" -ForegroundColor Yellow
                 break
