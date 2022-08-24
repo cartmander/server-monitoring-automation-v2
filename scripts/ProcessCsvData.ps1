@@ -63,7 +63,7 @@ $init = {
 
         $shouldAddWorkspace = "true"
 
-        if ($workspaceIdList.Count -gt 3) 
+        if ($workspaceIdList.Count -gt 3)
         {
             Write-Error "Virtual Machine: $virtualMachineName has more than three (3) workspaces already"
             return
@@ -105,7 +105,7 @@ $init = {
         UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
     }
 
-    catch 
+    catch
     {
         Write-Host $_
         exit 1
@@ -160,22 +160,22 @@ try
 
     Write-Host "Initializing automation..." -ForegroundColor Green
 
-    $csv = Import-Csv ".\csv\VirtualMachines.csv" 
+    $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
     $csv | ForEach-Object -Process {
         Start-Job -Name "$($_.VirtualMachineName)OnboardingJob" -ErrorAction Stop -InitializationScript $init -ScriptBlock {
             $MMAInstallationParameters = @{
                 subscription = $Using:_.Subscription
-                resourceGroup = $Using:_.ResourceGroup 
-                virtualMachineName = $Using:_.VirtualMachineName 
+                resourceGroup = $Using:_.ResourceGroup
+                virtualMachineName = $Using:_.VirtualMachineName
                 workspaceId = $Using:_.WorkspaceId
                 workspaceKey = $Using:_.WorkspaceKey
             }
 
             MonitoringAgentInstallation @MMAInstallationParameters
-            
+
         }
-    } 
+    }
 
 
     JobLogging
@@ -183,7 +183,7 @@ try
     Write-Host "Done running the automation..." -ForegroundColor Green
 }
 
-catch 
+catch
 {
     Write-Output $_
 }
