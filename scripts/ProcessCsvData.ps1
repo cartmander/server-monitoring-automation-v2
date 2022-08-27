@@ -25,13 +25,17 @@ function ValidateCsv
 }
 
 function JobLogging {
+    Write-Host "Waiting for jobs to finish executing..."
     $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*OnboardingJob"}
     $JobTable | ForEach-Object -Process {
         $_.ChildJobs[0].Name = $_.Name.Replace("OnboardingJob","ChildJob")
     }
     $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
-    $ChildJobs | Receive-Job -Keep
     $ChildJobs | ForEach-Object -Process {
+        Write-Host "=================================================="
+        Write-Host "Job output for $($_.Name)"
+        Write-Host "=================================================="
+        $_ | Receive-Job -Keep
         if ($_.State -eq "Completed") {
             Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Green
         }
@@ -39,9 +43,10 @@ function JobLogging {
             Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Red
         }
         else {
-            Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Yellow
+            Write-Host "$($_.Name.Replace('ChildJob','')) finished executing with `"$($_.State)`" state" -ForegroundColor Yellow
         }
     }
+    $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
 }
 
 
