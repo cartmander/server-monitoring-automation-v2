@@ -60,14 +60,13 @@ try
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
     $csv | ForEach-Object -Process {
-        Start-Job -Name "$($_.VirtualMachineName)OnboardingJob" -ErrorAction Stop -InitializationScript $init -ScriptBlock {
-            $MMAInstallationParameters = @{
-                subscription = $Using:_.Subscription
-                resourceGroup = $Using:_.ResourceGroup
-                virtualMachineName = $Using:_.VirtualMachineName
-                workspaceId = $Using:_.WorkspaceId
-                workspaceKey = $Using:_.WorkspaceKey
-            }
+        $MMAInstallationParameters = @(
+            $_.Subscription
+            $_.ResourceGroup
+            $_.VirtualMachineName
+            $_.WorkspaceId
+            $_.WorkspaceKey
+        )
 
             MonitoringAgentInstallation @MMAInstallationParameters
 
