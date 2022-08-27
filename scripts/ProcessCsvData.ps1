@@ -51,12 +51,9 @@ function JobLogging {
 
 
 
-try
-{
+try {
     az login -u $username -p $password
-
     Write-Host "Initializing automation..." -ForegroundColor Green
-
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
     $csv | ForEach-Object -Process {
@@ -67,19 +64,13 @@ try
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-
-            MonitoringAgentInstallation @MMAInstallationParameters
-
-        }
+        Start-Job -Name "$($_.VirtualMachineName)OnboardingJob" -ErrorAction Stop -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        #Logging Function TODO: Improvements
     }
-
-
     JobLogging
-
     Write-Host "Done running the automation..." -ForegroundColor Green
 }
-
-catch
-{
-    Write-Output $_
+catch {
+    Write-Host $_
+    exit $LASTEXITCODE
 }
