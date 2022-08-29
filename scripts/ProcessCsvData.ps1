@@ -87,7 +87,7 @@ try
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -ErrorAction Ignore -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -ErrorAction Continue -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
         #Logging Function TODO: Improvements
     }
 
