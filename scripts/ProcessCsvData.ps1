@@ -65,7 +65,7 @@ try
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
 
-    $csv | ForEach-Object -Process {
+    $csv | ForEach-Object -ErrorAction Continue -Process {
         $MMAInstallationParameters = @(
             $_.Subscription
             $_.ResourceGroup
@@ -73,16 +73,16 @@ try
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -ErrorAction Continue -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
         #Logging Function TODO: Improvements
     }
 
     JobLogging
-
+    Get-Job -IncludeChildJob
     Write-Host "Done running the automation..." -ForegroundColor Green
 }
 catch
 {
-    Write-Host $_
-    exit $LASTEXITCODE
+    Write-Host "Catch Block Error: $_"
+    #exit $LASTEXITCODE
 }
