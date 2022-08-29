@@ -22,7 +22,7 @@ function ValidateVirtualMachine
     if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
     {
         Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
-        exit 1
+        return $false
     }
 
     return $virtualMachine
@@ -90,9 +90,14 @@ try
     az account set --subscription $subscription
 
     $virtualMachine = ValidateVirtualMachine
-    $virtualMachineName = $virtualMachine.name
-    $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
-    UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+
+    if ($virtualMachine)
+    {
+        $virtualMachineName = $virtualMachine.name
+        $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
+        UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+    }
+
 }
 catch
 {
