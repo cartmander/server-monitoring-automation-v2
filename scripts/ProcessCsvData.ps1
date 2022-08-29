@@ -17,21 +17,7 @@ function VerifyJobState
     Write-Host "=================================================="
 
     $childJob | Receive-Job -Keep
-
-    if ($childJob.State -eq "Completed")
-    {
-        Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state" -ForegroundColor Green
-    }
-
-    elseif ($childJob.State -eq "Stopped")
-    {
-        Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state" -ForegroundColor Red
-    }
-
-    else
-    {
-        Write-Host "$($childJob.Name.Replace('ChildJob','')) finished executing with `"$($childJob.State)`" state" -ForegroundColor Yellow
-    }
+    Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state"
 }
 
 function JobLogging
