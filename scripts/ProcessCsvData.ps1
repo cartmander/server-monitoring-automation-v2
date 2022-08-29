@@ -98,5 +98,6 @@ try
 catch
 {
     Write-Host $_
-    exit $LASTEXITCODE
+    Write-Host "This is from catch block"
+    #exit $LASTEXITCODE
 }
