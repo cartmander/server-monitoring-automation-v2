@@ -39,6 +39,7 @@ function JobLogging
     Write-Host "Waiting for jobs to finish executing..."
 
     $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*OnboardingJob"}
+    $JobTable | FL
     $JobTable | ForEach-Object -Process {
         $_.ChildJobs[0].Name = $_.Name.Replace("OnboardingJob", "ChildJob")
     }
