@@ -9,23 +9,30 @@ param(
 function VerifyJobState
 {
     param(
-        [string] $name,
-        [string] $state
+        [object] $ChildJobs
     )
 
-    if ($state -eq "Completed") 
+    $ChildJobs | ForEach-Object -Process 
     {
-        Write-Host "$($name) finished executing with `"$($state)`" state" -ForegroundColor Green
-    }
+        Write-Host "=================================================="
+        Write-Host "Job output for $($_.Name)"
+        Write-Host "=================================================="
 
-    elseif ($_.State -eq "Stopped") 
-    {
-        Write-Host "$($name) finished executing with `"$($state)`" state" -ForegroundColor Red
-    }
+        $_ | Receive-Job -Keep
+        if ($state -eq "Completed") 
+        {
+            Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Green
+        }
     
-    else 
-    {
-        Write-Host "$($name.Replace('ChildJob','')) finished executing with `"$($state)`" state" -ForegroundColor Yellow
+        elseif ($_.State -eq "Stopped") 
+        {
+            Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Red
+        }
+        
+        else 
+        {
+            Write-Host "$($_.Name.Replace('ChildJob','')) finished executing with `"$($_.State)`" state" -ForegroundColor Yellow
+        }
     }
 }
 
@@ -40,17 +47,10 @@ function JobLogging
     }
 
     $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
-    $ChildJobs | ForEach-Object -Process 
-    {
-        Write-Host "=================================================="
-        Write-Host "Job output for $($_.Name)"
-        Write-Host "=================================================="
 
-        $_ | Receive-Job -Keep
-        VerifyJobState $_.Name $_.State
-    }
+    VerifyJobState $ChildJobs
 
-    $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime | Format-Table
+    $ChildJobs | Select-Object -Property Id, Name, State, PSBeginTime, PSEndTime | Format-Table
 }
 
 function ValidateCsv
