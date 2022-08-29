@@ -9,32 +9,32 @@ param(
 function VerifyJobState
 {
     param(
-        [object] $_
+        [object] $childJob
     )
 
     Write-Host "=================================================="
-    Write-Host "Job output for $($_.Name)"
+    Write-Host "Job output for $($childJob.Name)"
     Write-Host "=================================================="
 
-    $_ | Receive-Job -Keep
-    
-    if ($_.State -eq "Completed") 
+    $childJob | Receive-Job -Keep
+
+    if ($childJob.State -eq "Completed")
     {
-        Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Green
+        Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state" -ForegroundColor Green
     }
 
-    elseif ($_.State -eq "Stopped") 
+    elseif ($childJob.State -eq "Stopped")
     {
-        Write-Host "$($_.Name) finished executing with `"$($_.State)`" state" -ForegroundColor Red
+        Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state" -ForegroundColor Red
     }
-    
-    else 
+
+    else
     {
-        Write-Host "$($_.Name.Replace('ChildJob','')) finished executing with `"$($_.State)`" state" -ForegroundColor Yellow
+        Write-Host "$($childJob.Name.Replace('ChildJob','')) finished executing with `"$($childJob.State)`" state" -ForegroundColor Yellow
     }
 }
 
-function JobLogging 
+function JobLogging
 {
     Write-Host "Waiting for jobs to finish executing..."
 
@@ -70,12 +70,12 @@ function ValidateCsv
     }
 }
 
-try 
+try
 {
     az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
-    
+
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
 
@@ -95,7 +95,7 @@ try
 
     Write-Host "Done running the automation..." -ForegroundColor Green
 }
-catch 
+catch
 {
     Write-Host $_
     exit $LASTEXITCODE
