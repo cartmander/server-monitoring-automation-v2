@@ -21,8 +21,7 @@ function ValidateVirtualMachine
 
     if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
     {
-        Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
-        exit 1
+        throw "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
     }
 
     return $virtualMachine
@@ -96,6 +95,5 @@ try
 }
 catch
 {
-    Write-Host $_
-    exit 1
+    throw $_
 }
