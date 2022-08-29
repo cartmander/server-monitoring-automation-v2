@@ -87,7 +87,7 @@ try
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -ErrorAction Ignore -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
         #Logging Function TODO: Improvements
     }
 
@@ -98,6 +98,5 @@ try
 catch
 {
     Write-Host $_
-    Write-Host "This is from catch block"
-    #exit $LASTEXITCODE
+    exit $LASTEXITCODE
 }
