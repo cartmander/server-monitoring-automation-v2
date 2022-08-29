@@ -15,6 +15,8 @@
     [string] $workspaceKey
 )
 
+$ErrorActionPreference = 'Continue'
+
 function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
