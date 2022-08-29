@@ -15,7 +15,7 @@
     [string] $workspaceKey
 )
 
-$ErrorActionPreference = 'Continue'
+
 
 function ValidateVirtualMachine
 {
@@ -73,7 +73,6 @@ function UpdateVirtualMachineWorkspaces
             }
         }
     }
-
     az vm run-command invoke --command-id RunPowerShellScript `
     --name $virtualMachineName `
     --resource-group $resourceGroup `
