@@ -56,33 +56,26 @@ function ValidateCsv
     }
 }
 
-try
-{
-    az login -u $username -p $password
 
-    Write-Host "Initializing automation..." -ForegroundColor Green
+az login -u $username -p $password
 
-    $csv = Import-Csv ".\csv\VirtualMachines.csv"
-    ValidateCsv $csv
+Write-Host "Initializing automation..." -ForegroundColor Green
 
-    $csv | ForEach-Object -ErrorAction Continue -Process {
-        $MMAInstallationParameters = @(
-            $_.Subscription
-            $_.ResourceGroup
-            $_.VirtualMachineName
-            $_.WorkspaceId
-            $_.WorkspaceKey
-        )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
-        #Logging Function TODO: Improvements
-    }
+$csv = Import-Csv ".\csv\VirtualMachines.csv"
+ValidateCsv $csv
 
-    JobLogging
-    Get-Job -IncludeChildJob
-    Write-Host "Done running the automation..." -ForegroundColor Green
+$csv | ForEach-Object -ErrorAction Continue -Process {
+    $MMAInstallationParameters = @(
+        $_.Subscription
+        $_.ResourceGroup
+        $_.VirtualMachineName
+        $_.WorkspaceId
+        $_.WorkspaceKey
+    )
+    Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+    #Logging Function TODO: Improvements
 }
-catch
-{
-    Write-Host "Catch Block Error: $_"
-    #exit $LASTEXITCODE
-}
+
+JobLogging
+Get-Job -IncludeChildJob
+Write-Host "Done running the automation..." -ForegroundColor Green
