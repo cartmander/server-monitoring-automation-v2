@@ -1,0 +1,29 @@
+trigger: none
+
+parameters:
+  - name: username
+    type: string
+  - name: password
+    type: string
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    timeoutInMinutes: 360
+    pool: IRRNDG-AUTOMATION-POOL
+    steps:
+      - task: CopyFiles@2
+        displayName: 'Copy Run Command Scripts to Virtual Machine'
+        inputs:
+          sourceFolder: "$(System.DefaultWorkingDirectory)/scripts/run-commands"
+          targetFolder: "C:/scripts/ServerOnboardingAutomation"
+          overWrite: true
+
+      - task: AzureCLI@2
+        displayName: 'Server Onboarding Automation'
+        inputs:
+          azureSubscription: ICO-DEV-SERVICE-CONN
+          scriptType: ps
+          scriptPath: '$(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1'
+          arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }}'
