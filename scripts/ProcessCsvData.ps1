@@ -6,37 +6,6 @@ param(
     [string] $password
 )
 
-function VerifyJobState
-{
-    param(
-        [object] $childJob
-    )
-
-    Write-Host "=================================================="
-    Write-Host "Job output for $($childJob.Name)"
-    Write-Host "=================================================="
-
-    $childJob | Receive-Job -Keep
-    Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state"
-}
-
-function JobLogging
-{
-    Write-Host "Waiting for jobs to finish executing..."
-
-    $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*OnboardingJob"}
-    $JobTable | ForEach-Object -Process {
-        $_.ChildJobs[0].Name = $_.Name.Replace("OnboardingJob", "ChildJob")
-    }
-
-    $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
-    $ChildJobs | ForEach-Object -Process {
-        VerifyJobState $_
-    }
-
-    $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
-}
-
 function ValidateCsv
 {
     param(
@@ -54,34 +23,74 @@ function ValidateCsv
             exit 1
         }
     }
+
+    return $csv
 }
 
-try {
-    $ErrorActionPreference = 'Continue'
+function BuildCsvData
+{
+    param(
+        [object] $csvData,
+        [string] $columnName,
+        [string] $columnValue
+    )
+
+    $csvData.Add($columnName, $columnValue)
+
+    return $csvData
+}
+
+function ProcessCsv
+{
+    param(
+        [object] $csv
+    )
+
+    $counter = 0
+    $csvObject = Import-Csv "csv/VirtualMachines.csv" | Measure-Object
+
+    foreach ($data in $csv)
+    {
+        $column = $data | Get-Member -MemberType Properties
+        $csvData = @{}
+
+        Write-Progress -Activity 'Processing Virtual Machines Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $csvObject.Count) * 100) 
+
+        for($i = 0; $i -lt $column.Count; $i++)
+        {
+            $columnName = $column[$i].Name
+            $columnValue = $data | Select-Object -ExpandProperty $columnName
+
+            $csvData = BuildCsvData $csvData $columnName $columnValue
+        }
+
+        .\scripts\MonitoringAgentInstallation.ps1 `
+        -subscription $csvData.Subscription `
+        -resourceGroup $csvData.ResourceGroup `
+        -virtualMachineName $csvData.VirtualMachineName `
+        -workspaceId $csvData.WorkspaceId `
+        -workspaceKey $csvData.WorkspaceKey `
+        -currentCount $counter `
+        -total $csvObject.Count
+    }
+}
+
+try
+{
+
     az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
 
-    $csv = Import-Csv ".\csv\VirtualMachines.csv"
-    ValidateCsv $csv
+    $csv = Import-Csv "csv/VirtualMachines.csv"
 
-    $csv | ForEach-Object -Process {
-        $MMAInstallationParameters = @(
-            $_.Subscription
-            $_.ResourceGroup
-            $_.VirtualMachineName
-            $_.WorkspaceId
-            $_.WorkspaceKey
-        )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
-        #Logging Function TODO: Improvements
-    }
+    $validatedCsv = ValidateCsv $csv
+    ProcessCsv $validatedCsv
 
-    JobLogging
     Write-Host "Done running the automation..." -ForegroundColor Green
-    exit 0
 }
-catch {
-    Write-Host "Catch block error:"
-    $PSItem.ScriptStackTrace
+
+catch 
+{
+    Write-Output $_
 }
