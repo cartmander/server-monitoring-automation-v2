@@ -12,13 +12,7 @@ param(
     [string] $workspaceId,
 
     [Parameter(Mandatory=$true)]
-    [string] $workspaceKey,
-
-    [Parameter(Mandatory=$true)]
-    [int] $currentCount,
-
-    [Parameter(Mandatory=$true)]
-    [int] $total
+    [string] $workspaceKey
 )
 
 function ValidateVirtualMachine
@@ -28,7 +22,6 @@ function ValidateVirtualMachine
     if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
     {
         Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
-        Write-Error "Query does not have a running Windows virtual machine or does not exist"
         exit 1
     }
 
@@ -60,7 +53,7 @@ function UpdateVirtualMachineWorkspaces
 
     $shouldAddWorkspace = "true"
 
-    if ($workspaceIdList.Count -gt 3) 
+    if ($workspaceIdList.Count -gt 3)
     {
         Write-Error "Virtual Machine: $virtualMachineName has more than three (3) workspaces already"
         return
@@ -98,14 +91,11 @@ try
 
     $virtualMachine = ValidateVirtualMachine
     $virtualMachineName = $virtualMachine.name
-
-    Write-Host "Onboarding Virtual Machine(s): $virtualMachineName [$currentCount of $total]..." -ForegroundColor Cyan
-    
     $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
     UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
 }
-
-catch 
+catch
 {
     Write-Host $_
+    exit 1
 }
