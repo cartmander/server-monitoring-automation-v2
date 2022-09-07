@@ -3,8 +3,9 @@ trigger: none
 parameters:
   - name: username
     type: string
-  - name: password
-    type: string
+
+variables:
+  - group: SERVER-ONBOARDING-VARS
 
 stages:
 - stage: Build
@@ -26,4 +27,4 @@ stages:
           azureSubscription: ICO-DEV-SERVICE-CONN
           scriptType: ps
           scriptPath: '$(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1'
-          arguments: '-username ${{ parameters.username }} -password ${{ parameters.password }}'
+          arguments: '-username ${{ parameters.username }} -password $(${{ parameters.username }})'
