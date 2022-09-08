@@ -58,6 +58,8 @@ function ValidateCsv
 
 try {
     $ErrorActionPreference = 'Continue'
+    az account clear
+    az logout
     az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
