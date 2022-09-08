@@ -17,21 +17,7 @@ function VerifyJobState
     Write-Host "=================================================="
 
     $childJob | Receive-Job -Keep
-
-    if ($childJob.State -eq "Completed")
-    {
-        Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state" -ForegroundColor Green
-    }
-
-    elseif ($childJob.State -eq "Stopped")
-    {
-        Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state" -ForegroundColor Red
-    }
-
-    else
-    {
-        Write-Host "$($childJob.Name.Replace('ChildJob','')) finished executing with `"$($childJob.State)`" state" -ForegroundColor Yellow
-    }
+    Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state"
 }
 
 function JobLogging
@@ -70,8 +56,8 @@ function ValidateCsv
     }
 }
 
-try
-{
+try {
+    $ErrorActionPreference = 'Continue'
     az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
@@ -87,16 +73,15 @@ try
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -ErrorAction Ignore -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
         #Logging Function TODO: Improvements
     }
 
     JobLogging
-
     Write-Host "Done running the automation..." -ForegroundColor Green
+    exit 0
 }
-catch
-{
-    Write-Host $_
-    exit $LASTEXITCODE
+catch {
+    Write-Host "Catch block error:"
+    $PSItem.ScriptStackTrace
 }
