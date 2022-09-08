@@ -58,12 +58,21 @@ function ValidateCsv
 
 try {
     $ErrorActionPreference = 'Continue'
-    az login -u $username -p $password
+    $null = az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
 
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
+    $csv.Subscription | Select-Object -Unique | ForEach-Object -Process {
+        try {
+            az account set --subscription $_
+        }
+        catch {
+            $_
+            exit 1
+        }
+    }
 
     $csv | ForEach-Object -Process {
         $MMAInstallationParameters = @(
