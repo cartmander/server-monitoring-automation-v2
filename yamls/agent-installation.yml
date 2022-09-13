@@ -20,19 +20,15 @@ stages:
           targetFolder: "C:/scripts/ServerOnboardingAutomation"
           overWrite: true
 
-      - task: AzureCLI@2
+      - task: PowerShell@2
         displayName: Authenticate with ADM Account
         inputs:
-          azureSubscription: ICO-DEV-SERVICE-CONN
-          scriptType: ps
-          scriptLocation: inlineScript
-          inlineScript: |
+          script: |
             az account clear
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
-      - task: AzureCLI@2
-        displayName: 'Onboard Virtual Machines'
+      - task: PowerShell@2
+        displayName: Onboard Virtual Machines
         inputs:
-          azureSubscription: ICO-DEV-SERVICE-CONN
-          scriptType: ps
-          scriptPath: '$(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1'
+          targetType: 'filePath'
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
