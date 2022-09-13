@@ -1,11 +1,3 @@
-param(
-    [Parameter(Mandatory=$true)]
-    [string] $username,
-
-    [Parameter(Mandatory=$true)]
-    [string] $password
-)
-
 function VerifyJobState
 {
     param(
@@ -56,25 +48,33 @@ function ValidateCsv
     }
 }
 
-try {
+try 
+{
     $ErrorActionPreference = 'Continue'
-    $null = az account clear
-    $null = az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
-    $account_list = az account list | ConvertFrom-Json
+    
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
-    $no_subscription_access = 0
+
     $csv.Subscription | Select-Object -Unique | ForEach-Object -Process {
-        if ($account_list.name -notcontains $_){
+        $account_list = az account list | ConvertFrom-Json
+        $no_subscription_access = 0
+
+        if ($account_list.name -notcontains $_)
+        {
             Write-Error "You don't have access to $($_). Please check PIM"
             $no_subscription_access += 1
-        }else {
+        }
+
+        else 
+        {
             Write-Host "$($_) is visible from your account."
         }
     }
-    if ($no_subscription_access -gt 0) {
+
+    if ($no_subscription_access -gt 0) 
+    {
         exit 1
     }
 
@@ -94,7 +94,9 @@ try {
     Write-Host "Done running the automation..." -ForegroundColor Green
     exit 0
 }
-catch {
+
+catch 
+{
     Write-Host "Catch block error:"
     $PSItem.ScriptStackTrace
 }

@@ -8,10 +8,9 @@ variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: Build
+- stage: Server Onboarding Automation
   jobs:
-  - job: Build
-    timeoutInMinutes: 360
+  - job: Agent Installation
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: CopyFiles@2
@@ -22,9 +21,18 @@ stages:
           overWrite: true
 
       - task: AzureCLI@2
-        displayName: 'Server Onboarding Automation'
+        displayName: Authenticate with ADM Account
+        inputs:
+          azureSubscription: ICO-DEV-SERVICE-CONN
+          scriptType: ps
+          scriptLocation: inlineScript
+          inlineScript: |
+            $null = az account clear
+            $null = az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
+
+      - task: AzureCLI@2
+        displayName: 'Onboard Virtual Machines'
         inputs:
           azureSubscription: ICO-DEV-SERVICE-CONN
           scriptType: ps
           scriptPath: '$(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1'
-          arguments: '-username ${{ parameters.username }} -password $(${{ parameters.username }})'
