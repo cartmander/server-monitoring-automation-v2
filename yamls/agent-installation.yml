@@ -8,9 +8,9 @@ variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: Deploy
+- stage: Build
   jobs:
-  - job: Agent Installation
+  - job: Build
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: CopyFiles@2
