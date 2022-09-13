@@ -53,9 +53,9 @@ function UpdateVirtualMachineWorkspaces
 
     $shouldAddWorkspace = "true"
 
-    if ($workspaceIdList.Count -gt 3)
+    if ($workspaceIdList.Count -ge 4)
     {
-        Write-Error "Virtual Machine: $virtualMachineName has more than three (3) workspaces already"
+        Write-Error "Virtual Machine: $virtualMachineName has four (4) workspaces already"
         return
     }
 
