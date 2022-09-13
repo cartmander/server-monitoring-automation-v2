@@ -23,6 +23,7 @@ stages:
       - task: PowerShell@2
         displayName: Authenticate with ADM Account
         inputs:
+          targetType: 'inline'
           script: |
             az account clear
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
