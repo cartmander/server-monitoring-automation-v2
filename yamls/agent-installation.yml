@@ -8,9 +8,9 @@ variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: Server_Onboarding-Stage
+- stage: ServerOnboardingStage
   jobs:
-  - job: Agent_Installation-Job
+  - job: AgentInstallationJob
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: CopyFiles@2
