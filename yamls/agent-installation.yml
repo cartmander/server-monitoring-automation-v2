@@ -8,7 +8,7 @@ variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: Server Onboarding Automation
+- stage: Deploy
   jobs:
   - job: Agent Installation
     pool: IRRNDG-AUTOMATION-POOL
