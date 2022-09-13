@@ -58,20 +58,24 @@ function ValidateCsv
 
 try {
     $ErrorActionPreference = 'Continue'
+    $null = az account clear
     $null = az login -u $username -p $password
 
     Write-Host "Initializing automation..." -ForegroundColor Green
-
+    $account_list = az account list | ConvertFrom-Json
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     ValidateCsv $csv
+    $no_subscription_access = 0
     $csv.Subscription | Select-Object -Unique | ForEach-Object -Process {
-        try {
-            az account set --subscription $_
+        if ($account_list.name -notcontains $_){
+            Write-Error "You don't have access to $($_). Please check PIM"
+            $no_subscription_access += 1
+        }else {
+            Write-Host "$($_) is visible from your account."
         }
-        catch {
-            $_
-            exit 1
-        }
+    }
+    if ($no_subscription_access -gt 0) {
+        exit 1
     }
 
     $csv | ForEach-Object -Process {
