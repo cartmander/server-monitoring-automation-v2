@@ -8,9 +8,9 @@ variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: Build
+- stage: Server_Onboarding-Stage
   jobs:
-  - job: Build
+  - job: Agent_Installation-Job
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: CopyFiles@2
@@ -27,8 +27,8 @@ stages:
           scriptType: ps
           scriptLocation: inlineScript
           inlineScript: |
-            $null = az account clear
-            $null = az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
+            az account clear
+            az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
       - task: AzureCLI@2
         displayName: 'Onboard Virtual Machines'

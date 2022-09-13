@@ -29,6 +29,34 @@ function JobLogging
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
 }
 
+function VerifySubscriptionAccess
+{
+    param(
+        [object] $csv
+    )
+
+    $csv.Subscription | Select-Object -Unique | ForEach-Object -Process {
+        $account_list = az account list | ConvertFrom-Json
+        $no_subscription_access = 0
+
+        if ($account_list.name -notcontains $_)
+        {
+            Write-Error "You don't have access to $($_). Please check PIM"
+            $no_subscription_access += 1
+        }
+
+        else 
+        {
+            Write-Host "$($_) is visible from your account."
+        }
+    }
+
+    if ($no_subscription_access -gt 0) 
+    {
+        exit 1
+    }
+}
+
 function ValidateCsv
 {
     param(
@@ -55,28 +83,9 @@ try
     Write-Host "Initializing automation..." -ForegroundColor Green
     
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
+    
     ValidateCsv $csv
-
-    $csv.Subscription | Select-Object -Unique | ForEach-Object -Process {
-        $account_list = az account list | ConvertFrom-Json
-        $no_subscription_access = 0
-
-        if ($account_list.name -notcontains $_)
-        {
-            Write-Error "You don't have access to $($_). Please check PIM"
-            $no_subscription_access += 1
-        }
-
-        else 
-        {
-            Write-Host "$($_) is visible from your account."
-        }
-    }
-
-    if ($no_subscription_access -gt 0) 
-    {
-        exit 1
-    }
+    VerifySubscriptionAccess $csv
 
     $csv | ForEach-Object -Process {
         $MMAInstallationParameters = @(
