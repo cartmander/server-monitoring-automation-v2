@@ -14,16 +14,16 @@ stages:
     pool: IRRNDG-AUTOMATION-POOL
     steps:
       - task: CopyFiles@2
-        displayName: 'Copy Run Command Scripts to Virtual Machine'
+        displayName: Copy Run Command Scripts to Virtual Machine
         inputs:
-          sourceFolder: "$(System.DefaultWorkingDirectory)/scripts/run-commands"
-          targetFolder: "C:/scripts/ServerOnboardingAutomation"
+          sourceFolder: $(System.DefaultWorkingDirectory)/scripts/run-commands
+          targetFolder: C:/scripts/ServerOnboardingAutomation
           overWrite: true
 
       - task: PowerShell@2
         displayName: Authenticate with ADM Account
         inputs:
-          targetType: 'inline'
+          targetType: inline
           script: |
             az account clear
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
@@ -31,5 +31,5 @@ stages:
       - task: PowerShell@2
         displayName: Onboard Virtual Machines
         inputs:
-          targetType: 'filePath'
+          targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
