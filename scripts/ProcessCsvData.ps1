@@ -1,10 +1,61 @@
-param(
-    [Parameter(Mandatory=$true)]
-    [string] $username,
+function VerifyJobState
+{
+    param(
+        [object] $childJob
+    )
 
-    [Parameter(Mandatory=$true)]
-    [string] $password
-)
+    Write-Host "=================================================="
+    Write-Host "Job output for $($childJob.Name)"
+    Write-Host "=================================================="
+
+    $childJob | Receive-Job -Keep
+    Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state"
+}
+
+function JobLogging
+{
+    Write-Host "Waiting for jobs to finish executing..."
+
+    $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*OnboardingJob"}
+    $JobTable | ForEach-Object -Process {
+        $_.ChildJobs[0].Name = $_.Name.Replace("OnboardingJob", "ChildJob")
+    }
+
+    $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
+    $ChildJobs | ForEach-Object -Process {
+        VerifyJobState $_
+    }
+
+    $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
+}
+
+function VerifySubscriptionAccess
+{
+    param(
+        [object] $csv
+    )
+
+    $csv.Subscription | Select-Object -Unique | ForEach-Object -Process {
+        $account_list = az account list | ConvertFrom-Json
+        $no_subscription_access = 0
+
+        if ($account_list.name -notcontains $_)
+        {
+            Write-Error "You don't have access to $($_). Please check PIM"
+            $no_subscription_access += 1
+        }
+
+        else 
+        {
+            Write-Host "$($_) is visible from your account."
+        }
+    }
+
+    if ($no_subscription_access -gt 0) 
+    {
+        exit 1
+    }
+}
 
 function ValidateCsv
 {
@@ -23,74 +74,38 @@ function ValidateCsv
             exit 1
         }
     }
-
-    return $csv
 }
 
-function BuildCsvData
+try 
 {
-    param(
-        [object] $csvData,
-        [string] $columnName,
-        [string] $columnValue
-    )
-
-    $csvData.Add($columnName, $columnValue)
-
-    return $csvData
-}
-
-function ProcessCsv
-{
-    param(
-        [object] $csv
-    )
-
-    $counter = 0
-    $csvObject = Import-Csv "csv/VirtualMachines.csv" | Measure-Object
-
-    foreach ($data in $csv)
-    {
-        $column = $data | Get-Member -MemberType Properties
-        $csvData = @{}
-
-        Write-Progress -Activity 'Processing Virtual Machines Onboarding...' -CurrentOperation $virtualMachine.name -PercentComplete (($counter++ / $csvObject.Count) * 100) 
-
-        for($i = 0; $i -lt $column.Count; $i++)
-        {
-            $columnName = $column[$i].Name
-            $columnValue = $data | Select-Object -ExpandProperty $columnName
-
-            $csvData = BuildCsvData $csvData $columnName $columnValue
-        }
-
-        .\scripts\MonitoringAgentInstallation.ps1 `
-        -subscription $csvData.Subscription `
-        -resourceGroup $csvData.ResourceGroup `
-        -virtualMachineName $csvData.VirtualMachineName `
-        -workspaceId $csvData.WorkspaceId `
-        -workspaceKey $csvData.WorkspaceKey `
-        -currentCount $counter `
-        -total $csvObject.Count
-    }
-}
-
-try
-{
-
-    az login -u $username -p $password
+    $ErrorActionPreference = 'Continue'
 
     Write-Host "Initializing automation..." -ForegroundColor Green
+    
+    $csv = Import-Csv ".\csv\VirtualMachines.csv"
+    
+    ValidateCsv $csv
+    VerifySubscriptionAccess $csv
 
-    $csv = Import-Csv "csv/VirtualMachines.csv"
+    $csv | ForEach-Object -Process {
+        $MMAInstallationParameters = @(
+            $_.Subscription
+            $_.ResourceGroup
+            $_.VirtualMachineName
+            $_.WorkspaceId
+            $_.WorkspaceKey
+        )
+        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        #Logging Function TODO: Improvements
+    }
 
-    $validatedCsv = ValidateCsv $csv
-    ProcessCsv $validatedCsv
-
+    JobLogging
     Write-Host "Done running the automation..." -ForegroundColor Green
+    exit 0
 }
 
 catch 
 {
-    Write-Output $_
+    Write-Host "Catch block error:"
+    $PSItem.ScriptStackTrace
 }
