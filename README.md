@@ -1,14 +1,14 @@
 # Server Onboarding Automation
 
-This is the unofficial Server Onboarding tool (testing phase)
+This is the official Server Onboarding tool
 
 ## How to Use: Repository
 
-Make sure you branch out from "feature/AutoOnboarding" branch by going to the branch dropdown and selecting "+ New Branch".
+Make sure you branch out from "master" branch by going to the branch dropdown and selecting "+ New Branch".
 
 Provide the following:
-- Name - feature/{your_name}{date}{time} (ex. feature/Kevin82020221227PM)
-- Based on - feature/AutoOnboarding
+- Name - feature/{your_name}
+- Based on - master
 
 ## Creating a list of servers to onboard:
 - Open a csv on your local, then plot out the necessary servers to onboard. You may download the csv in the repository to know the properties that you need to provide.
