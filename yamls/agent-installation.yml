@@ -26,7 +26,6 @@ stages:
           targetType: inline
           script: |
             az logout --username ${{ parameters.username }}
-            az account clear
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
       - task: PowerShell@2
