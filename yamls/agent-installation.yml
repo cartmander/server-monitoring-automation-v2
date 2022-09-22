@@ -25,7 +25,6 @@ stages:
         inputs:
           targetType: inline
           script: |
-            az logout --username ${{ parameters.username }}
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
       - task: PowerShell@2
