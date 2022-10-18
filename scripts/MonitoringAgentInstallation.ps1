@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)]
     [string] $subscription,
 
@@ -14,35 +14,6 @@ param(
     [Parameter(Mandatory=$true)]
     [string] $workspaceKey
 )
-
-function ValidateVirtualMachine
-{
-    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName') &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
-
-    if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
-    {
-        Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
-        exit 1
-    }
-
-    return $virtualMachine
-}
-
-function ListVirtualMachineWorkspaces
-{
-    param(
-        [string] $virtualMachineName
-    )
-
-    $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript `
-    --name $virtualMachineName `
-    --resource-group $resourceGroup `
-    --scripts "@C:\\scripts\ServerOnboardingAutomation\GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
-
-    $workspaceIdList = $getWorkspaces.value[0].message.Split()
-
-    return $workspaceIdList
-}
 
 function UpdateVirtualMachineWorkspaces
 {
@@ -85,15 +56,83 @@ function UpdateVirtualMachineWorkspaces
     }
 }
 
+function ListVirtualMachineWorkspaces
+{
+    param(
+        [string] $virtualMachineName
+    )
+
+    $getWorkspaces = az vm run-command invoke --command-id RunPowerShellScript `
+    --name $virtualMachineName `
+    --resource-group $resourceGroup `
+    --scripts "@C:\\scripts\ServerOnboardingAutomation\GetWorkspacesFromVirtualMachine.ps1" | ConvertFrom-Json
+
+    $workspaceIdList = $getWorkspaces.value[0].message.Split()
+
+    return $workspaceIdList
+}
+
+function EvaluateWorkspaces
+{
+    param(
+        [string] $virtualMachineName
+    )
+
+    $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
+    UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+}
+
+function PowerVirtualMachine
+{
+    param(
+        [boot] $shouldPowerVM
+    )
+
+    if ($shouldPowerVM)
+    {
+        az vm start --name $virtualMachineName --resource-group $resourceGroup
+    }
+
+    else
+    {
+        az vm stop --name $virtualMachineName --resource-group $resourceGroup
+    }
+}
+
+function ValidateVirtualMachine
+{
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(storageProfile.osDisk.osType, 'Windows') && contains(name, '$virtualMachineName')]" -d -o json | ConvertFrom-Json
+
+    if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
+    {
+        Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
+        exit 1
+    }
+
+    return $virtualMachine
+}
+
+
 try
 {
     az account set --subscription $subscription
 
     $virtualMachine = ValidateVirtualMachine
     $virtualMachineName = $virtualMachine.name
-    $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
-    UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+
+    if ($virtualMachine.powerState -eq "VM deallocated")
+    {
+        PowerVirtualMachine $true
+        EvaluateWorkspaces $virtualMachineName
+        PowerVirtualMachine $false
+    }
+
+    else 
+    {
+        EvaluateWorkspaces $virtualMachineName
+    }
 }
+
 catch
 {
     Write-Host $_
