@@ -85,7 +85,7 @@ function EvaluateWorkspaces
 function PowerVirtualMachine
 {
     param(
-        [boot] $shouldPowerVM
+        [bool] $shouldPowerVM
     )
 
     if ($shouldPowerVM)
@@ -95,7 +95,7 @@ function PowerVirtualMachine
 
     else
     {
-        az vm stop --name $virtualMachineName --resource-group $resourceGroup
+        az vm deallocate --name $virtualMachineName --resource-group $resourceGroup --no-wait
     }
 }
 
@@ -120,7 +120,7 @@ try
     $virtualMachine = ValidateVirtualMachine
     $virtualMachineName = $virtualMachine.name
 
-    if ($virtualMachine.powerState -eq "VM deallocated")
+    if ($virtualMachine.powerState -ne "VM running")
     {
         PowerVirtualMachine $true
         EvaluateWorkspaces $virtualMachineName
