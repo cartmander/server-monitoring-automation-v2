@@ -91,11 +91,13 @@ function PowerVirtualMachine
     if ($shouldPowerVM)
     {
         az vm start --name $virtualMachineName --resource-group $resourceGroup
+        Write-Host "Virtual Machine: $virtualMachineName has been powered on"
     }
 
     else
     {
         az vm deallocate --name $virtualMachineName --resource-group $resourceGroup --no-wait
+        Write-Host "Virtual Machine: $virtualMachineName is being deallocated"
     }
 }
 
