@@ -112,7 +112,6 @@ function ValidateVirtualMachine
     return $virtualMachine
 }
 
-
 try
 {
     az account set --subscription $subscription
