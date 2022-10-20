@@ -23,11 +23,11 @@ function UpdateLinuxWorkspaces
 
     foreach ($resource in $virtualMachine.resources)
     {
-        if($resource.typePropertiesType -eq "AzureMonitorLinuxAgent")
+        if($resource.typePropertiesType -eq "OmsAgentForLinux")
         {
             Write-Host "Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
             
-            az vm extension delete -g $virtualMachine.resourceGroup --vm-name $virtualMachine.name -n $resource.name
+            az vm extension delete --resource-group $virtualMachine.resourceGroup --vm-name $virtualMachine.name --name $resource.name
             
             Write-Host "Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
         }
