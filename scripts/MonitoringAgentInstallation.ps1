@@ -43,7 +43,7 @@ function UpdateLinuxWorkspaces
     --publisher "Microsoft.EnterpriseCloud.Monitoring" `
     --protected-settings $protected_settings `
     --settings $settings `
-    --version latestVersion
+    --version "1.13"
 
     Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
 }
