@@ -25,7 +25,11 @@ function UpdateLinuxWorkspaces
     {
         if($resource.typePropertiesType -eq "AzureMonitorLinuxAgent")
         {
+            Write-Host "Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
+            
             az vm extension delete -g $virtualMachine.resourceGroup --vm-name $virtualMachine.name -n $resource.name
+            
+            Write-Host "Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
         }
     }
 
@@ -37,6 +41,8 @@ function UpdateLinuxWorkspaces
     --protected-settings "{'workspaceKey':$workspaceKey}" `
     --settings "{'workspaceId':$workspaceId}" `
     --version latestVersion
+
+    Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
 }
 
 function UpdateWindowsWorkspaces
@@ -50,7 +56,7 @@ function UpdateWindowsWorkspaces
 
     if ($workspaceIdList.Count -ge 4)
     {
-        Write-Error "Virtual Machine: $virtualMachineName has at least four (4) workspaces already"
+        Write-Error "Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
         return
     }
 
@@ -62,7 +68,7 @@ function UpdateWindowsWorkspaces
             {
                 $shouldAddWorkspace = "false"
 
-                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName" -ForegroundColor Yellow
+                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)" -ForegroundColor Yellow
                 break
             }
         }
@@ -76,7 +82,7 @@ function UpdateWindowsWorkspaces
 
     if ($shouldAddWorkspace -eq "true")
     {
-        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName" -ForegroundColor Green
+        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Windows)" -ForegroundColor Green
     }
 }
 
@@ -106,8 +112,8 @@ function EvaluateVirtualMachineWorkspaces
 
     if ($osType -eq "Windows")
     {
-        $workspaceIdList = ListWindowsWorkspaces $virtualMachine.name
-        UpdateWindowsWorkspaces $virtualMachine.name $workspaceIdList
+        $workspaceIdList = ListWindowsWorkspaces $virtualMachineName
+        UpdateWindowsWorkspaces $virtualMachineName $workspaceIdList
     }
 
     elseif ($osType -eq "Linux")
