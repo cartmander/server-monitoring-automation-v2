@@ -38,8 +38,8 @@ function UpdateLinuxWorkspaces
     --vm-name $virtualMachineName `
     --name "OmsAgentForLinux" `
     --publisher "Microsoft.EnterpriseCloud.Monitoring" `
-    --protected-settings "{'workspaceKey':$workspaceKey}" `
-    --settings "{'workspaceId':$workspaceId}" `
+    --protected-settings '{"workspaceKey": $workspaceKey}' `
+    --settings '{"workspaceId": $workspaceId}' `
     --version latestVersion
 
     Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
