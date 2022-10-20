@@ -15,7 +15,7 @@
     [string] $workspaceKey
 )
 
-function UpdateLinuxWorkspaces
+function InstallLinuxWorkspace
 {
     param(
         [object] $virtualMachine
@@ -48,7 +48,7 @@ function UpdateLinuxWorkspaces
     Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
 }
 
-function UpdateWindowsWorkspaces
+function InstallWindowsWorkspace
 {
     param(
         [string] $virtualMachineName,
@@ -105,7 +105,7 @@ function ListWindowsWorkspaces
     return $workspaceIdList
 }
 
-function EvaluateVirtualMachineWorkspaces
+function EvaluateVirtualMachine
 {
     param(
         [object] $virtualMachine
@@ -116,12 +116,12 @@ function EvaluateVirtualMachineWorkspaces
     if ($osType -eq "Windows")
     {
         $workspaceIdList = ListWindowsWorkspaces $virtualMachineName
-        UpdateWindowsWorkspaces $virtualMachineName $workspaceIdList
+        InstallWindowsWorkspace $virtualMachineName $workspaceIdList
     }
 
     elseif ($osType -eq "Linux")
     {
-        UpdateLinuxWorkspaces $virtualMachine
+        InstallLinuxWorkspace $virtualMachine
     }
 }
 
@@ -166,13 +166,13 @@ try
     if ($virtualMachine.powerState -ne "VM running")
     {
         PowerVirtualMachine $true
-        EvaluateVirtualMachineWorkspaces $virtualMachine
+        EvaluateVirtualMachine $virtualMachine
         PowerVirtualMachine $false
     }
 
     else 
     {
-        EvaluateVirtualMachineWorkspaces $virtualMachine
+        EvaluateVirtualMachine $virtualMachine
     }
 }
 
