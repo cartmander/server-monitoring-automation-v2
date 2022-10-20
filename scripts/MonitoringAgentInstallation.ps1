@@ -33,16 +33,16 @@ function UpdateLinuxWorkspaces
         }
     }
 
-    protected_settings = "{'workspaceKey': '$workspaceKey'}"
-    settings = "{'workspaceId': '$workspaceId'}"
+    $protected_settings = "{'workspaceKey': '$workspaceKey'}"
+    $settings = "{'workspaceId': '$workspaceId'}"
 
     az vm extension set `
     --resource-group $resourceGroup `
     --vm-name $virtualMachineName `
     --name "OmsAgentForLinux" `
     --publisher "Microsoft.EnterpriseCloud.Monitoring" `
-    --protected-settings "${protected_settings}" `
-    --settings "${settings}" `
+    --protected-settings $protected_settings `
+    --settings $settings `
     --version latestVersion
 
     Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
