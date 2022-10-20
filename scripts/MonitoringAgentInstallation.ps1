@@ -15,7 +15,31 @@
     [string] $workspaceKey
 )
 
-function UpdateVirtualMachineWorkspaces
+function UpdateLinuxWorkspaces
+{
+    param(
+        [object] $virtualMachine
+    )
+
+    foreach ($resource in $virtualMachine.resources)
+    {
+        if($resource.typePropertiesType -eq "AzureMonitorLinuxAgent")
+        {
+            az vm extension delete -g $virtualMachine.resourceGroup --vm-name $virtualMachine.name -n $resource.name
+        }
+    }
+
+    az vm extension set `
+    --resource-group $resourceGroup `
+    --vm-name $virtualMachineName `
+    --name "OmsAgentForLinux" `
+    --publisher "Microsoft.EnterpriseCloud.Monitoring" `
+    --protected-settings "{'workspaceKey':$workspaceKey}" `
+    --settings "{'workspaceId':$workspaceId}" `
+    --version latestVersion
+}
+
+function UpdateWindowsWorkspaces
 {
     param(
         [string] $virtualMachineName,
@@ -56,7 +80,7 @@ function UpdateVirtualMachineWorkspaces
     }
 }
 
-function ListVirtualMachineWorkspaces
+function ListWindowsWorkspaces
 {
     param(
         [string] $virtualMachineName
@@ -72,14 +96,24 @@ function ListVirtualMachineWorkspaces
     return $workspaceIdList
 }
 
-function EvaluateWorkspaces
+function EvaluateVirtualMachineWorkspaces
 {
     param(
-        [string] $virtualMachineName
+        [object] $virtualMachine
     )
 
-    $workspaceIdList = ListVirtualMachineWorkspaces $virtualMachineName
-    UpdateVirtualMachineWorkspaces $virtualMachineName $workspaceIdList
+    $osType = $virtualMachine.storageProfile.osDisk.osType
+
+    if ($osType -eq "Windows")
+    {
+        $workspaceIdList = ListWindowsWorkspaces $virtualMachine.name
+        UpdateWindowsWorkspaces $virtualMachine.name $workspaceIdList
+    }
+
+    elseif ($osType -eq "Linux")
+    {
+        UpdateLinuxWorkspaces $virtualMachine
+    }
 }
 
 function PowerVirtualMachine
@@ -119,18 +153,17 @@ try
     az account set --subscription $subscription
 
     $virtualMachine = ValidateVirtualMachine
-    $virtualMachineName = $virtualMachine.name
 
     if ($virtualMachine.powerState -ne "VM running")
     {
         PowerVirtualMachine $true
-        EvaluateWorkspaces $virtualMachineName
+        EvaluateVirtualMachineWorkspaces $virtualMachine
         PowerVirtualMachine $false
     }
 
     else 
     {
-        EvaluateWorkspaces $virtualMachineName
+        EvaluateVirtualMachineWorkspaces $virtualMachine
     }
 }
 
