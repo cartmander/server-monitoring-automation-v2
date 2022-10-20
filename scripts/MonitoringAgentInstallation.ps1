@@ -23,7 +23,7 @@ function UpdateLinuxWorkspaces
 
     foreach ($resource in $virtualMachine.resources)
     {
-        if($resource.typePropertiesType -eq "OmsAgentForLinux")
+        if ($resource.typePropertiesType -eq "OmsAgentForLinux")
         {
             Write-Host "Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
             
