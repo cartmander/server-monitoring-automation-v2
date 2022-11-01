@@ -1,2 +1,5 @@
 Subscription,ResourceGroup,VirtualMachineName,WorkspaceId,WorkspaceKey
-WTW-ITCGMN-DEV,ITCGMN-D-NA20-FLEXERA-RGRP,N11-IT-DBSE001D,17a15fe5-b953-466e-ba63-d25099b8131d,0Jf1n51n00/k4CAFzjgOJ/tUxhizfDcalEYjH4Y5aK8vsvZO+DGmXLg777GVLDSeB30JQYO67dG3KIOSfzWP1w==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-ap20-rgrp1,A20-IT-F5LTM01P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-ap20-rgrp1,A20-IT-F5LTM02P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-em20-rgrp1,E20-IT-F5LTM01P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-em20-rgrp1,E20-IT-F5LTM02P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
