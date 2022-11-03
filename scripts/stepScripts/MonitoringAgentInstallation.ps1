@@ -46,7 +46,7 @@ function InstallLinuxWorkspace
     --publisher "Microsoft.EnterpriseCloud.Monitoring" `
     --protected-settings $protected_settings `
     --settings $settings `
-    --version "1.13"
+    --version "1.14.19"
 
     Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
 }
