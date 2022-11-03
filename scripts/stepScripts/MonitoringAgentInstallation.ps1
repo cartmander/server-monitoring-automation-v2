@@ -12,7 +12,10 @@
     [string] $workspaceId,
 
     [Parameter(Mandatory=$true)]
-    [string] $workspaceKey
+    [string] $workspaceKey,
+
+    [Parameter(Mandatory=$true)]
+    [string] $hasPowerStateCycling
 )
 
 function InstallLinuxWorkspace
@@ -163,7 +166,7 @@ try
 
     $virtualMachine = ValidateVirtualMachine
 
-    if ($virtualMachine.powerState -ne "VM running")
+    if ($hasPowerStateCycling -eq "true" -and $virtualMachine.powerState -ne "VM running")
     {
         PowerVirtualMachine $true
         EvaluateVirtualMachine $virtualMachine

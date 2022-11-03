@@ -1,3 +1,14 @@
+param(
+    [Parameter(Mandatory=$true)]
+    [string] $hasVMInformationExport,
+
+    [Parameter(Mandatory=$true)]
+    [string] $hasServerOnboarding,
+
+    [Parameter(Mandatory=$true)]
+    [string] $hasPowerStateCycling
+)
+
 function VerifyJobState
 {
     param(
@@ -29,7 +40,29 @@ function JobLogging
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
 }
 
-function VerifySubscriptionAccess
+function ProcessServerOnboarding
+{
+    param(
+        [object] $csv
+    )
+
+    $csv | ForEach-Object -Process {
+        $MMAInstallationParameters = @(
+            $_.Subscription
+            $_.ResourceGroup
+            $_.VirtualMachineName
+            $_.WorkspaceId
+            $_.WorkspaceKey
+            $hasPowerStateCycling
+        )
+
+        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+    }
+
+    JobLogging
+}
+
+function ValidateSubscriptionAccess
 {
     param(
         [object] $csv
@@ -85,21 +118,18 @@ try
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     
     ValidateCsv $csv
-    VerifySubscriptionAccess $csv
+    ValidateSubscriptionAccess $csv
 
-    $csv | ForEach-Object -Process {
-        $MMAInstallationParameters = @(
-            $_.Subscription
-            $_.ResourceGroup
-            $_.VirtualMachineName
-            $_.WorkspaceId
-            $_.WorkspaceKey
-        )
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
-        #Logging Function TODO: Improvements
+    if ($hasVMInformationExport -eq "true")
+    {
+        #TODO
     }
 
-    JobLogging
+    if ($hasServerOnboarding -eq "true")
+    {
+        ProcessServerOnboarding $csv
+    }
+    
     Write-Host "Done running the automation..." -ForegroundColor Green
     exit 0
 }

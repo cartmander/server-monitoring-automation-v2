@@ -1,25 +1,28 @@
 trigger: none
 
+pool: IRRNDG-AUTOMATION-POOL
+
 parameters:
   - name: username
     type: string
+  - name: hasVMInformationExport
+    type: string
+    default: false
+  - name: hasServerOnboarding
+    type: string
+    default: true
+  - name: hasPowerStateCycling
+    type: string
+    default: false
 
 variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: ServerOnboardingStage
+- stage: AzureAuthentication
   jobs:
-  - job: AgentInstallationJob
-    pool: IRRNDG-AUTOMATION-POOL
+  - job: AzureAuthentication
     steps:
-      - task: CopyFiles@2
-        displayName: Copy Run Command Scripts to Virtual Machine
-        inputs:
-          sourceFolder: $(System.DefaultWorkingDirectory)/scripts/run-commands
-          targetFolder: C:/scripts/ServerOnboardingAutomation
-          overWrite: true
-
       - task: PowerShell@2
         displayName: Authenticate with ADM Account
         inputs:
@@ -27,8 +30,34 @@ stages:
           script: |
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
+- stage: VMInformationExport
+  dependsOn: AzureAuthentication
+  condition: eq('${{ parameters.hasVMInformationExport }}', 'true')
+  jobs:
+  - job: VMInformationExport
+    steps:
+      - task: PowerShell@2
+        displayName: Authenticate with ADM Account
+        inputs:
+          targetType: inline
+          script: |
+            az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
+
+- stage: ServerOnboarding
+  dependsOn: AzureAuthentication
+  condition: eq('${{ parameters.hasServerOnboarding }}', 'true')
+  jobs:
+  - job: ServerOnboarding
+    steps:
+      - task: CopyFiles@2
+        displayName: Copy Run Command Scripts to Virtual Machine
+        inputs:
+          sourceFolder: $(System.DefaultWorkingDirectory)/scripts/runCommands
+          targetFolder: C:/scripts/ServerOnboardingAutomation
+          overWrite: true
+
       - task: PowerShell@2
         displayName: Onboard Virtual Machines
         inputs:
           targetType: filePath
-          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ServerOnboarding.ps1 -hasPowerStateCycling {{ parameters.hasPowerStateCycling }}
