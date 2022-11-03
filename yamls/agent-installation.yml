@@ -63,4 +63,4 @@ stages:
         displayName: Perform Server Onboarding
         inputs:
           targetType: filePath
-          filePath: $(System.DefaultWorkingDirectory)/scripts/ServerOnboarding.ps1 -hasPowerStateCycling {{ parameters.hasPowerStateCycling }}
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ServerOnboarding.ps1 -hasVMInformationExport {{ parameters.hasVMInformationExport }} -hasServerOnboarding {{ parameters.hasServerOnboarding }} -hasPowerStateCycling {{ parameters.hasPowerStateCycling }}
