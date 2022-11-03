@@ -22,11 +22,11 @@ parameters:
 variables:
   - group: SERVER-ONBOARDING-VARS
   - name: hasServerInformationExport
-    value: false
+    value: $false
   - name: hasServerOnboarding
-    value: true
+    value: $true
   - name: hasPowerStateCycling
-    value: false
+    value: $false
 
 stages:
 - stage: AzureAuthenticationStage
