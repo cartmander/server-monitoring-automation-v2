@@ -22,17 +22,17 @@ parameters:
 variables:
   - group: SERVER-ONBOARDING-VARS
   - ${{ if eq(parameters['hasServerInformationExport'], 'true') }}:
-    hasServerInformationExport: $true
+      hasServerInformationExport: $true
   - ${{ else }}:
-    hasServerInformationExport: $false
+      hasServerInformationExport: $false
   - ${{ if eq(parameters['hasServerOnboarding'], 'true') }}:
-    hasServerOnboarding: $true
+      hasServerOnboarding: $true
   - ${{ else }}:
-    hasServerOnboarding: $false
+      hasServerOnboarding: $false
   - ${{ if eq(parameters['hasPowerStateCycling'], 'true') }}:
-    hasPowerStateCycling: $true
+      hasPowerStateCycling: $true
   - ${{ else }}:
-    hasPowerStateCycling: $false
+      hasPowerStateCycling: $false
 
 stages:
 - stage: AzureAuthenticationStage
