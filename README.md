@@ -45,7 +45,6 @@ You can verify if the servers were onboarded properly by doing the following opt
 ## Guidelines to Follow:
 - Before you use the automation, make sure the necessary access has already been set (ex. PIM activation). You can only onboard servers that our ADM accounts have access to. Otherwise, the automation will not see the resources.
 - Your ADM account password is not yet expired.
-- You can only onboard running Windows servers. Linux and stopped servers will not be onboarded.
 - When modifying a csv file, make sure to pass the actual casing of the resource groups and server names (except subscription) you see in Azure portal. For some reasons, Azure CLI queries are case-sensitive. (ex. In Azure Portal: n20-os-vscn001d, so in CSV, it should be n20-os-vscn001d as well and not N20-OS-VSCN001D)
-- The pipeline has 4 agents that are running in the cloud and can run asynchronously. If all agents are busy, the following pipeline executions will have to queue and wait.
+- The pipeline has 3 agents that are running in the cloud and can run asynchronously. If all agents are busy, the following pipeline executions will have to queue and wait.
 - Make sure you don't have conflicting server assignments when onboarding to avoid pipeline execution failures.

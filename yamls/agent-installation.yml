@@ -1,25 +1,40 @@
 trigger: none
 
+pool: IRRNDG-AUTOMATION-POOL
+
 parameters:
   - name: username
+    displayName: Username
     type: string
+  - name: hasServerOnboarding
+    displayName: Perform Server Onboarding
+    type: boolean
+    default: true
+  - name: hasPowerBootShutdown
+    displayName: Perform Server Boot and Shutdown
+    type: boolean
+    default: false
 
 variables:
   - group: SERVER-ONBOARDING-VARS
+  - ${{ if eq(parameters['hasServerOnboarding'], 'true') }}:
+    - name: hasServerOnboarding
+      value: $true
+  - ${{ else }}:
+    - name: hasServerOnboarding
+      value: $false
+  - ${{ if eq(parameters['hasPowerBootShutdown'], 'true') }}:
+    - name: hasPowerBootShutdown
+      value: $true
+  - ${{ else }}:
+    - name: hasPowerBootShutdown
+      value: $false
 
 stages:
-- stage: ServerOnboardingStage
+- stage: AzureAuthenticationStage
   jobs:
-  - job: AgentInstallationJob
-    pool: IRRNDG-AUTOMATION-POOL
+  - job: AzureAuthenticationJob
     steps:
-      - task: CopyFiles@2
-        displayName: Copy Run Command Scripts to Virtual Machine
-        inputs:
-          sourceFolder: $(System.DefaultWorkingDirectory)/scripts/run-commands
-          targetFolder: C:/scripts/ServerOnboardingAutomation
-          overWrite: true
-
       - task: PowerShell@2
         displayName: Authenticate with ADM Account
         inputs:
@@ -27,8 +42,24 @@ stages:
           script: |
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
+- stage: ServerOnboardingStage
+  dependsOn: AzureAuthenticationStage
+  condition: eq('${{ parameters.hasServerOnboarding }}', 'true')
+  jobs:
+  - job: ServerOnboardingJob
+    steps:
+      - task: CopyFiles@2
+        displayName: Copy Run Command Scripts to Virtual Machine
+        inputs:
+          sourceFolder: $(System.DefaultWorkingDirectory)/scripts/runCommands
+          targetFolder: C:/scripts/ServerOnboardingAutomation
+          overWrite: true
+
       - task: PowerShell@2
-        displayName: Onboard Virtual Machines
+        displayName: Perform Server Onboarding
         inputs:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: >
+            -hasServerOnboarding ${{ variables.hasServerOnboarding }} 
+            -hasPowerBootShutdown ${{ variables.hasPowerBootShutdown }}
