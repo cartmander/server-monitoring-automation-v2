@@ -23,8 +23,8 @@ stages:
 - stage: AzureAuthenticationStage
   displayName: Azure Authentication Stage
   jobs:
-    displayName: Azure Authentication Job
   - job: AzureAuthenticationJob
+    displayName: Azure Authentication Job
     steps:
       - task: PowerShell@2
         displayName: Authenticate with ADM Account
