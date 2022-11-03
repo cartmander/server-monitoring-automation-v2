@@ -23,6 +23,7 @@ stages:
 - stage: AzureAuthenticationStage
   displayName: Azure Authentication Stage
   jobs:
+    displayName: Azure Authentication Job
   - job: AzureAuthenticationJob
     steps:
       - task: PowerShell@2
@@ -38,6 +39,7 @@ stages:
   condition: eq('${{ parameters.operation }}', 'Power On Servers')
   jobs:
   - job: PowerOnServersJob
+    displayName: Power On Servers Job
     steps:
       - task: PowerShell@2
         displayName: Power On Servers
@@ -52,6 +54,7 @@ stages:
   condition: eq('${{ parameters.operation }}', 'Onboard Servers')
   jobs:
   - job: OnboardServersJob
+    displayName: Onboard Servers Job
     steps:
       - task: CopyFiles@2
         displayName: Copy Run Command Scripts to Virtual Machine
@@ -73,6 +76,7 @@ stages:
   condition: eq('${{ parameters.operation }}', 'Power Off Servers')
   jobs:
   - job: PowerOffServersJob
+    displayName: Power Off Servers Job
     steps:
       - task: PowerShell@2
         displayName: Power Off Servers
@@ -82,11 +86,12 @@ stages:
           arguments: -operation {{ parameters.operation }}
 
 - stage: PowerStateOnboardServersStage
-  displayName: Power On Servers, Onboard Servers, Power Off Servers Stage
+  displayName: Power On, Onboard, Power Off Servers Stage
   dependsOn: AzureAuthenticationStage
   condition: eq('${{ parameters.operation }}', 'Power On, Onboard & Power Off Servers')
   jobs:
   - job: PowerStateOnServersJob
+    displayName: Power On Servers Job
     steps:
       - task: PowerShell@2
         displayName: Power On Servers
@@ -96,6 +101,7 @@ stages:
           arguments: -operation "Power On Servers"
 
   - job: PowerStateOnboardServersJob
+    displayName: Onboard Servers Job
     dependsOn: PowerStateOnServersJob
     steps:
       - task: CopyFiles@2
@@ -113,6 +119,7 @@ stages:
           arguments: -operation "Onboard Servers"
 
   - job: PowerStateOffServersJob
+    displayName: Power Off Servers Job
     dependsOn: PowerStateOnboardServersJob
     steps:
       - task: PowerShell@2
