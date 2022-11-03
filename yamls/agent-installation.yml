@@ -38,7 +38,7 @@ stages:
   dependsOn: AzureAuthenticationStage
   condition: eq('${{ parameters.hasServerInformationExport }}', 'true')
   jobs:
-  - job: ServerInformationExportStage
+  - job: ServerInformationExportJob
     steps:
       - task: PowerShell@2
         displayName: Export Virtual Machine Information
