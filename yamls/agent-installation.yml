@@ -11,7 +11,7 @@ parameters:
     type: boolean
     default: true
   - name: hasPowerBootShutdown
-    displayName: Perform Server Boot and Shutdown
+    displayName: Perform Server Boot and Shutdown (only modify this if 'Perform Server Onboarding' is ticked)
     type: boolean
     default: false
 
