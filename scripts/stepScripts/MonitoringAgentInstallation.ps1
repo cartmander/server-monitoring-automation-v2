@@ -21,6 +21,8 @@ function InstallLinuxWorkspace
         [object] $virtualMachine
     )
 
+    Write-Host "hello"
+
     foreach ($resource in $virtualMachine.resources)
     {
         if ($resource.typePropertiesType -eq "OmsAgentForLinux")
