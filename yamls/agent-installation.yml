@@ -9,15 +9,15 @@ parameters:
   - name: hasServerInformationExport
     displayName: Export Server Information
     type: boolean
-    default: false
+    default: 0
   - name: hasServerOnboarding
     displayName: Perform Server Onboarding
     type: boolean
-    default: true
+    default: 1
   - name: hasPowerStateCycling
     displayName: Perform Power State Cycling
     type: boolean
-    default: false
+    default: 0
 
 variables:
   - group: SERVER-ONBOARDING-VARS
