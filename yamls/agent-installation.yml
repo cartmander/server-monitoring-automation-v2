@@ -14,7 +14,7 @@ parameters:
     type: boolean
     default: true
   - name: hasPowerStateCycling
-    displayName: Perform Power State Cycling (modify only if 'Perform Server Onboarding' is true)
+    displayName: Perform Power State Cycling
     type: boolean
     default: false
 
@@ -22,9 +22,9 @@ variables:
   - group: SERVER-ONBOARDING-VARS
 
 stages:
-- stage: AzureAuthentication
+- stage: AzureAuthenticationStage
   jobs:
-  - job: AzureAuthentication
+  - job: AzureAuthenticationJob
     steps:
       - task: PowerShell@2
         displayName: Authenticate with ADM Account
@@ -33,11 +33,11 @@ stages:
           script: |
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
-- stage: VMInformationExport
+- stage: VMInformationExportStage
   dependsOn: AzureAuthentication
   condition: eq('${{ parameters.hasVMInformationExport }}', 'true')
   jobs:
-  - job: VMInformationExport
+  - job: VMInformationExportJob
     steps:
       - task: PowerShell@2
         displayName: Export Virtual Machine Information
@@ -46,11 +46,11 @@ stages:
           script: |
             Write-Host "Hello world"
 
-- stage: ServerOnboarding
+- stage: ServerOnboardingStage
   dependsOn: AzureAuthentication
   condition: eq('${{ parameters.hasServerOnboarding }}', 'true')
   jobs:
-  - job: ServerOnboarding
+  - job: ServerOnboardingJob
     steps:
       - task: CopyFiles@2
         displayName: Copy Run Command Scripts to Virtual Machine
