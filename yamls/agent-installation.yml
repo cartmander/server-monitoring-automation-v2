@@ -22,22 +22,22 @@ parameters:
 variables:
   - group: SERVER-ONBOARDING-VARS
   - ${{ if eq(parameters['hasServerInformationExport'], 'true') }}:
-      name: hasServerInformationExport
+    - name: hasServerInformationExport
       value: $true
   - ${{ else }}:
-      name: hasServerInformationExport
+    - name: hasServerInformationExport
       value: $false
   - ${{ if eq(parameters['hasServerOnboarding'], 'true') }}:
-      name: hasServerOnboarding
+    - name: hasServerOnboarding
       value: $true
   - ${{ else }}:
-      name: hasServerOnboarding
+    - name: hasServerOnboarding
       value: $false
   - ${{ if eq(parameters['hasPowerStateCycling'], 'true') }}:
-      name: hasPowerStateCycling
+    - name: hasPowerStateCycling
       value: $true
   - ${{ else }}:
-      name: hasPowerStateCycling
+    - name: hasPowerStateCycling
       value: $false
 
 stages:
