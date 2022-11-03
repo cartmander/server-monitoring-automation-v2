@@ -41,8 +41,6 @@ function ProcessServerPowerStateModification
         [bool] $shouldPowerOn
     )
 
-    Write-Host "hello"
-
     $csv | ForEach-Object -Process {
         $ServerPowerStateParameters = @(
             $_.Subscription
@@ -51,7 +49,7 @@ function ProcessServerPowerStateModification
             $shouldPowerOn
         )
 
-        $ServerPowerStateParameters
+        Write-Host $_
 
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateParameters
     }
