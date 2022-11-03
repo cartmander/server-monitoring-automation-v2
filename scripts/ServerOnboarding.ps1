@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true)]
-    [bool] $hasVMInformationExport,
+    [bool] $hasServerInformationExport,
 
     [Parameter(Mandatory=$true)]
     [bool] $hasServerOnboarding,
@@ -120,7 +120,7 @@ try
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
 
-    if ($hasVMInformationExport)
+    if ($hasServerInformationExport)
     {
         #TODO
     }
