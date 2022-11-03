@@ -49,8 +49,6 @@ function ProcessServerPowerStateModification
             $shouldPowerOn
         )
 
-        Write-Host $_
-
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateParameters
     }
 
@@ -139,12 +137,12 @@ try
 
     if ($operation -eq "Power On Servers")
     {
-        ProcessServerPowerStateModification $true
+        ProcessServerPowerStateModification $csv $true
     }
 
     elseif ($operation -eq "Power Off Servers")
     {
-        ProcessServerPowerStateModification $false
+        ProcessServerPowerStateModification $csv $false
     }
 
     elseif ($operation -eq "Onboard Servers")
