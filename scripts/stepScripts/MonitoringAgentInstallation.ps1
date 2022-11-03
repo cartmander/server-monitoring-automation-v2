@@ -127,7 +127,7 @@ function EvaluateVirtualMachine
 
 function ValidateVirtualMachine
 {
-    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')]" -d -o json | ConvertFrom-Json
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')  &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
 
     if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
     {
