@@ -140,10 +140,15 @@ function ValidateVirtualMachine
 
 try
 {
+    az account set --subscription $subscription
 
+    $virtualMachine = ValidateVirtualMachine
+
+    EvaluateVirtualMachine $virtualMachine
 }
 
 catch
 {
+    Write-Host $_
     exit 1
 }
