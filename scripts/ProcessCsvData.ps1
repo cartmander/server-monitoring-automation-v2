@@ -135,6 +135,8 @@ try
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
 
+    $operation
+
     if ($operation -eq "Power On Servers")
     {
         ProcessServerPowerStateModification $true
