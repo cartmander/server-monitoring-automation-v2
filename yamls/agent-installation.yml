@@ -9,7 +9,7 @@ parameters:
   - name: operation
     displayName: Operation
     type: string
-    default: true
+    default: Onboard Servers
     values:
     - Power On Servers
     - Power Off Servers
