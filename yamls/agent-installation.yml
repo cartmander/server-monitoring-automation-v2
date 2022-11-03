@@ -64,4 +64,8 @@ stages:
         displayName: Perform Server Onboarding
         inputs:
           targetType: filePath
-          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1 -hasServerInformationExport {{ parameters.hasServerInformationExport }} -hasServerOnboarding {{ parameters.hasServerOnboarding }} -hasPowerStateCycling {{ parameters.hasPowerStateCycling }}
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: >
+            -hasServerInformationExport {{ parameters.hasServerInformationExport }} 
+            -hasServerOnboarding {{ parameters.hasServerOnboarding }} 
+            -hasPowerStateCycling {{ parameters.hasPowerStateCycling }}
