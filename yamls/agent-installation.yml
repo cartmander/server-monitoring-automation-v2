@@ -9,12 +9,12 @@ parameters:
   - name: operation
     displayName: Operation
     type: string
-    default: Onboard Servers
+    default: "Onboard Servers"
     values:
-    - Power On Servers
-    - Power Off Servers
-    - Onboard Servers
-    - Power On, Onboard & Power Off Servers
+    - "Power On Servers"
+    - "Power Off Servers"
+    - "Onboard Servers"
+    - "Power On, Onboard & Power Off Servers"
 
 variables:
   - group: SERVER-ONBOARDING-VARS
