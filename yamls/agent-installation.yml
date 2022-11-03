@@ -46,7 +46,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
-          arguments: -operation "${{ parameters.operation }}"
+          arguments: -operation "Power On Servers"
 
 - stage: OnboardServersStage
   displayName: Onboard Servers Stage
@@ -68,7 +68,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
-          arguments: -operation "${{ parameters.operation }}"
+          arguments: -operation "Onboard Servers"
 
 - stage: PowerOffServersStage
   displayName: Power Off Servers Stage
@@ -83,7 +83,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
-          arguments: -operation "${{ parameters.operation }}"
+          arguments: -operation "Power Off Servers"
 
 - stage: PowerStateOnboardServersStage
   displayName: Power On, Onboard, Power Off Servers Stage
