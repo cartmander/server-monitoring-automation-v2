@@ -1,6 +1,8 @@
 param(
-    [bool] $hasServerInformationExport=$false,
+    [Parameter(Mandatory=$true)]
     [bool] $hasServerOnboarding=$false,
+
+    [Parameter(Mandatory=$true)]
     [bool] $hasPowerStateCycling=$false
 )
 
@@ -33,23 +35,6 @@ function JobLogging
     }
 
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
-}
-
-function ProcessServerInformationExport
-{
-    param(
-        [object] $csv
-    )
-
-    $csv | ForEach-Object -Process {
-        $VMInformationExportParameters = @(
-            $_.VirtualMachineName
-        )
-
-        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\VirtualMachinesInformationExport.ps1 -ArgumentList $VMInformationExportParameters
-    }
-
-    JobLogging
 }
 
 function ProcessServerOnboarding
@@ -131,11 +116,6 @@ try
     
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
-
-    if ($hasServerInformationExport)
-    {
-        #TODO
-    }
 
     if ($hasServerOnboarding)
     {

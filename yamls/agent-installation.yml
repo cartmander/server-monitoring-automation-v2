@@ -6,10 +6,6 @@ parameters:
   - name: username
     displayName: Username
     type: string
-  - name: hasServerInformationExport
-    displayName: Export Server Information
-    type: boolean
-    default: false
   - name: hasServerOnboarding
     displayName: Perform Server Onboarding
     type: boolean
@@ -21,12 +17,6 @@ parameters:
 
 variables:
   - group: SERVER-ONBOARDING-VARS
-  - ${{ if eq(parameters['hasServerInformationExport'], 'true') }}:
-    - name: hasServerInformationExport
-      value: $true
-  - ${{ else }}:
-    - name: hasServerInformationExport
-      value: $false
   - ${{ if eq(parameters['hasServerOnboarding'], 'true') }}:
     - name: hasServerOnboarding
       value: $true
@@ -51,20 +41,6 @@ stages:
           targetType: inline
           script: |
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
-
-- stage: ServerInformationExportStage
-  dependsOn: AzureAuthenticationStage
-  condition: eq('${{ parameters.hasServerInformationExport }}', 'true')
-  jobs:
-  - job: ServerInformationExportJob
-    steps:
-      - task: PowerShell@2
-        displayName: Export Virtual Machine Information
-        inputs:
-          targetType: filePath
-          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
-          arguments: >
-            -hasServerInformationExport ${{ variables.hasServerInformationExport }} 
 
 - stage: ServerOnboardingStage
   dependsOn: AzureAuthenticationStage
