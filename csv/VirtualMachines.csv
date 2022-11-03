@@ -1,2 +1,5 @@
 Subscription,ResourceGroup,VirtualMachineName,WorkspaceId,WorkspaceKey
-WTW-IRRNDG-DEV,MANILA-POC-RGRP,ID-TNMPCHNI001C,d85b4d66-7bb1-43fa-aeba-e20d5482005d,Dh20ESQMZYCigPdhq6iafybOzOUBXuneE7+IvLdEc7on4UAw8TYQSEDhIxx4NgmOSLl+iYcUpp9Vt1waSZtaGw==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-ap20-rgrp1,A20-IT-F5LTM01P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-ap20-rgrp1,A20-IT-F5LTM02P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-em20-rgrp1,E20-IT-F5LTM01P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
+WTW-ITCGIO-PROD,itcgio-p-idm-federation-em20-rgrp1,E20-IT-F5LTM02P,54a5c746-eaa6-4b2f-8ecb-6c70d7e584fb,cF5N58bw/vRkWVBd1slMhfb/8ysj0v5+zpXeRG0j/ZNUrwMgF+VzmGu4C7Xsfi71ZqsWCBX9HOeUbE2KchjLyQ==
