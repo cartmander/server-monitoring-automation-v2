@@ -104,7 +104,7 @@ stages:
     displayName: Onboard Servers Job
     dependsOn: PowerStateOnServersJob
     steps:
-      - task: CopyFiles@2'
+      - task: CopyFiles@2
         displayName: Copy Run Command Scripts to Virtual Machine
         inputs:
           sourceFolder: $(System.DefaultWorkingDirectory)/scripts/runCommands
