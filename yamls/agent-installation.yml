@@ -10,8 +10,8 @@ parameters:
     displayName: Perform Server Onboarding
     type: boolean
     default: true
-  - name: hasPowerStateCycling
-    displayName: Perform Power State Cycling
+  - name: hasPowerBootShutdown
+    displayName: Perform Server Boot and Shutdown
     type: boolean
     default: false
 
@@ -23,11 +23,11 @@ variables:
   - ${{ else }}:
     - name: hasServerOnboarding
       value: $false
-  - ${{ if eq(parameters['hasPowerStateCycling'], 'true') }}:
-    - name: hasPowerStateCycling
+  - ${{ if eq(parameters['hasPowerBootShutdown'], 'true') }}:
+    - name: hasPowerBootShutdown
       value: $true
   - ${{ else }}:
-    - name: hasPowerStateCycling
+    - name: hasPowerBootShutdown
       value: $false
 
 stages:
@@ -62,4 +62,4 @@ stages:
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
           arguments: >
             -hasServerOnboarding ${{ variables.hasServerOnboarding }} 
-            -hasPowerStateCycling ${{ variables.hasPowerStateCycling }}
+            -hasPowerBootShutdown ${{ variables.hasPowerBootShutdown }}

@@ -15,7 +15,7 @@
     [string] $workspaceKey,
 
     [Parameter(Mandatory=$true)]
-    [string] $hasPowerStateCycling
+    [string] $hasPowerBootShutdown
 )
 
 function InstallLinuxWorkspace
@@ -166,7 +166,7 @@ try
 
     $virtualMachine = ValidateVirtualMachine
 
-    if ($hasPowerStateCycling -and $virtualMachine.powerState -ne "VM running")
+    if ($hasPowerBootShutdown -and $virtualMachine.powerState -ne "VM running")
     {
         PowerVirtualMachine $true
         EvaluateVirtualMachine $virtualMachine

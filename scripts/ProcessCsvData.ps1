@@ -3,7 +3,7 @@ param(
     [bool] $hasServerOnboarding=$false,
 
     [Parameter(Mandatory=$true)]
-    [bool] $hasPowerStateCycling=$false
+    [bool] $hasPowerBootShutdown=$false
 )
 
 function VerifyJobState
@@ -50,7 +50,7 @@ function ProcessServerOnboarding
             $_.VirtualMachineName
             $_.WorkspaceId
             $_.WorkspaceKey
-            $hasPowerStateCycling
+            $hasPowerBootShutdown
         )
 
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
