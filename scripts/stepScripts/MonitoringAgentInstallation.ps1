@@ -166,7 +166,7 @@ try
 
     $virtualMachine = ValidateVirtualMachine
 
-    if ($hasPowerStateCycling -eq "true" -and $virtualMachine.powerState -ne "VM running")
+    if ($hasPowerStateCycling -and $virtualMachine.powerState -ne "VM running")
     {
         PowerVirtualMachine $true
         EvaluateVirtualMachine $virtualMachine

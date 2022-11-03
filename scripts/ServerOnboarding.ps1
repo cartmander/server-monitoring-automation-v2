@@ -1,12 +1,12 @@
 param(
     [Parameter(Mandatory=$true)]
-    [string] $hasVMInformationExport,
+    [bool] $hasVMInformationExport,
 
     [Parameter(Mandatory=$true)]
-    [string] $hasServerOnboarding,
+    [bool] $hasServerOnboarding,
 
     [Parameter(Mandatory=$true)]
-    [string] $hasPowerStateCycling
+    [bool] $hasPowerStateCycling
 )
 
 function VerifyJobState
@@ -120,12 +120,12 @@ try
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
 
-    if ($hasVMInformationExport -eq "true")
+    if ($hasVMInformationExport)
     {
         #TODO
     }
 
-    if ($hasServerOnboarding -eq "true")
+    if ($hasServerOnboarding)
     {
         ProcessServerOnboarding $csv
     }
