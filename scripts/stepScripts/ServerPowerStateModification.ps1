@@ -26,8 +26,8 @@ function PowerVirtualMachine
 
     elseif (-not $shouldPowerOn -and $virtualMachine.powerState -eq "VM running")
     {
-        az vm deallocate --name $virtualMachineName --resource-group $resourceGroup --no-wait
-        Write-Host "Virtual Machine: $virtualMachineName is being deallocated"
+        az vm deallocate --name $virtualMachineName --resource-group $resourceGroup
+        Write-Host "Virtual Machine: $virtualMachineName has been deallocated"
     }
 }
 
