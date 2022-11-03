@@ -9,18 +9,38 @@ parameters:
   - name: hasServerInformationExport
     displayName: Export Server Information
     type: boolean
-    default: 0
+    default: false
   - name: hasServerOnboarding
     displayName: Perform Server Onboarding
     type: boolean
-    default: 1
+    default: true
   - name: hasPowerStateCycling
     displayName: Perform Power State Cycling
     type: boolean
-    default: 0
+    default: false
 
 variables:
   - group: SERVER-ONBOARDING-VARS
+  - ${{ if eq(${{ parameters.hasServerInformationExport }}', 'true' ) }}:
+    - name: hasServerInformationExport
+      value: true
+  - ${{ else }}:
+    - name: hasServerInformationExport
+      value: false
+
+  - ${{ if eq(${{ parameters.hasServerOnboarding }}', 'true' ) }}:
+    - name: hasServerOnboarding
+      value: true
+  - ${{ else }}:
+    - name: hasServerOnboarding
+      value: false
+
+  - ${{ if eq(${{ parameters.hasPowerStateCycling }}', 'true' ) }}:
+    - name: hasPowerStateCycling
+      value: true
+  - ${{ else }}:
+    - name: hasPowerStateCycling
+      value: false
 
 stages:
 - stage: AzureAuthenticationStage
@@ -66,6 +86,6 @@ stages:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
           arguments: >
-            -hasServerInformationExport {{ parameters.hasServerInformationExport }} 
-            -hasServerOnboarding {{ parameters.hasServerOnboarding }} 
-            -hasPowerStateCycling {{ parameters.hasPowerStateCycling }}
+            -hasServerInformationExport ${{ variables.hasServerInformationExport }} 
+            -hasServerOnboarding ${{ variables.hasServerOnboarding }} 
+            -hasPowerStateCycling ${{ variables.hasPowerStateCycling }} 
