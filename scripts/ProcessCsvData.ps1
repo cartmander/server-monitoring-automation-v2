@@ -1,11 +1,6 @@
 param(
-    [Parameter(Mandatory=$true)]
     [bool] $hasServerInformationExport=$false,
-
-    [Parameter(Mandatory=$true)]
     [bool] $hasServerOnboarding=$false,
-
-    [Parameter(Mandatory=$true)]
     [bool] $hasPowerStateCycling=$false
 )
 
