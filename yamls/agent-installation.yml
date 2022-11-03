@@ -35,8 +35,8 @@ stages:
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
 - stage: VMInformationExportStage
-  dependsOn: AzureAuthentication
-  condition: eq('${{ parameters.hasVMInformationExport }}', 'true')
+  dependsOn: AzureAuthenticationStage
+  condition: eq('${{ parameters.hasServerInformationExport }}', 'true')
   jobs:
   - job: VMInformationExportJob
     steps:
@@ -48,7 +48,7 @@ stages:
             Write-Host "Hello world"
 
 - stage: ServerOnboardingStage
-  dependsOn: AzureAuthentication
+  dependsOn: AzureAuthenticationStage
   condition: eq('${{ parameters.hasServerOnboarding }}', 'true')
   jobs:
   - job: ServerOnboardingJob
