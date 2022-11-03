@@ -68,7 +68,6 @@ function ProcessMonitoringAgentInstallation
             $_.VirtualMachineName
             $_.WorkspaceId
             $_.WorkspaceKey
-            $willBootAndShutdown
         )
 
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
