@@ -120,6 +120,8 @@ try
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
 
+    $hasServerInformationExport.GetType()
+
     if ($hasServerInformationExport)
     {
         #TODO
