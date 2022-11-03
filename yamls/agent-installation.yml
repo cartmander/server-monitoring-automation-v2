@@ -61,9 +61,10 @@ stages:
       - task: PowerShell@2
         displayName: Export Virtual Machine Information
         inputs:
-          targetType: inline
-          script: |
-            Write-Host "Hello world"
+          targetType: filePath
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: >
+            -hasServerInformationExport ${{ variables.hasServerInformationExport }} 
 
 - stage: ServerOnboardingStage
   dependsOn: AzureAuthenticationStage
@@ -84,6 +85,5 @@ stages:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
           arguments: >
-            -hasServerInformationExport ${{ variables.hasServerInformationExport }} 
             -hasServerOnboarding ${{ variables.hasServerOnboarding }} 
-            -hasPowerStateCycling ${{ variables.hasPowerStateCycling }} 
+            -hasPowerStateCycling ${{ variables.hasPowerStateCycling }}

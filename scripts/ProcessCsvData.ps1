@@ -1,12 +1,12 @@
 param(
     [Parameter(Mandatory=$true)]
-    [bool] $hasServerInformationExport,
+    [bool] $hasServerInformationExport=$false,
 
     [Parameter(Mandatory=$true)]
-    [bool] $hasServerOnboarding,
+    [bool] $hasServerOnboarding=$false,
 
     [Parameter(Mandatory=$true)]
-    [bool] $hasPowerStateCycling
+    [bool] $hasPowerStateCycling=$false
 )
 
 function VerifyJobState
@@ -27,9 +27,9 @@ function JobLogging
 {
     Write-Host "Waiting for jobs to finish executing..."
 
-    $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*OnboardingJob"}
+    $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*AutomationJob"}
     $JobTable | ForEach-Object -Process {
-        $_.ChildJobs[0].Name = $_.Name.Replace("OnboardingJob", "ChildJob")
+        $_.ChildJobs[0].Name = $_.Name.Replace("AutomationJob", "ChildJob")
     }
 
     $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
@@ -38,6 +38,23 @@ function JobLogging
     }
 
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
+}
+
+function ProcessServerInformationExport
+{
+    param(
+        [object] $csv
+    )
+
+    $csv | ForEach-Object -Process {
+        $VMInformationExportParameters = @(
+            $_.VirtualMachineName
+        )
+
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\VirtualMachinesInformationExport.ps1 -ArgumentList $VMInformationExportParameters
+    }
+
+    JobLogging
 }
 
 function ProcessServerOnboarding
@@ -56,7 +73,7 @@ function ProcessServerOnboarding
             $hasPowerStateCycling
         )
 
-        Start-Job -Name "$($_.VirtualMachineName)-OnboardingJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
     }
 
     JobLogging
