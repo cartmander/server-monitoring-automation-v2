@@ -1,9 +1,6 @@
 param(
     [Parameter(Mandatory=$true)]
-    [bool] $hasServerOnboarding=$false,
-
-    [Parameter(Mandatory=$true)]
-    [bool] $hasPowerBootShutdown=$false
+    [string] $operation
 )
 
 function VerifyJobState
@@ -37,7 +34,28 @@ function JobLogging
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
 }
 
-function ProcessServerOnboarding
+function ProcessServerPowerStateModification
+{
+    param(
+        [object] $csv,
+        [bool] $shouldPowerOn
+    )
+
+    $csv | ForEach-Object -Process {
+        $ServerPowerStateParameters = @(
+            $_.Subscription
+            $_.ResourceGroup
+            $_.VirtualMachineName
+            $shouldPowerOn
+        )
+
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateParameters
+    }
+
+    JobLogging
+}
+
+function ProcessMonitoringAgentInstallation
 {
     param(
         [object] $csv
@@ -50,7 +68,7 @@ function ProcessServerOnboarding
             $_.VirtualMachineName
             $_.WorkspaceId
             $_.WorkspaceKey
-            $hasPowerBootShutdown
+            $willBootAndShutdown
         )
 
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
@@ -117,9 +135,19 @@ try
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
 
-    if ($hasServerOnboarding)
+    if ($operation -eq "Power On Servers")
     {
-        ProcessServerOnboarding $csv
+        ProcessServerPowerStateModification $true
+    }
+
+    elseif ($operation -eq "Power Off Servers")
+    {
+        ProcessServerPowerStateModification $false
+    }
+
+    elseif ($operation -eq "Onboard Servers")
+    {
+        ProcessMonitoringAgentInstallation $csv
     }
     
     Write-Host "Done running the automation..." -ForegroundColor Green

@@ -12,10 +12,7 @@
     [string] $workspaceId,
 
     [Parameter(Mandatory=$true)]
-    [string] $workspaceKey,
-
-    [Parameter(Mandatory=$true)]
-    [string] $hasPowerBootShutdown
+    [string] $workspaceKey
 )
 
 function InstallLinuxWorkspace
@@ -128,25 +125,6 @@ function EvaluateVirtualMachine
     }
 }
 
-function PowerVirtualMachine
-{
-    param(
-        [bool] $shouldPowerVM
-    )
-
-    if ($shouldPowerVM)
-    {
-        az vm start --name $virtualMachineName --resource-group $resourceGroup
-        Write-Host "Virtual Machine: $virtualMachineName has been powered on"
-    }
-
-    else
-    {
-        az vm deallocate --name $virtualMachineName --resource-group $resourceGroup --no-wait
-        Write-Host "Virtual Machine: $virtualMachineName is being deallocated"
-    }
-}
-
 function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')]" -d -o json | ConvertFrom-Json
@@ -166,17 +144,7 @@ try
 
     $virtualMachine = ValidateVirtualMachine
 
-    if ($hasPowerBootShutdown -and $virtualMachine.powerState -ne "VM running")
-    {
-        PowerVirtualMachine $true
-        EvaluateVirtualMachine $virtualMachine
-        PowerVirtualMachine $false
-    }
-
-    else 
-    {
-        EvaluateVirtualMachine $virtualMachine
-    }
+    EvaluateVirtualMachine $virtualMachine
 }
 
 catch

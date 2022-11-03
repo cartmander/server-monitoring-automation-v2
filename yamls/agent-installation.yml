@@ -6,32 +6,22 @@ parameters:
   - name: username
     displayName: Username
     type: string
-  - name: hasServerOnboarding
-    displayName: Perform Server Onboarding
-    type: boolean
+  - name: operation
+    displayName: Operation
+    type: string
     default: true
-  - name: hasPowerBootShutdown
-    displayName: Perform Server Boot and Shutdown (only modify this if 'Perform Server Onboarding' is ticked)
-    type: boolean
-    default: false
+    values:
+    - Power On Servers
+    - Power Off Servers
+    - Onboard Servers
+    - Power On, Onboard & Power Off Servers
 
 variables:
   - group: SERVER-ONBOARDING-VARS
-  - ${{ if eq(parameters['hasServerOnboarding'], 'true') }}:
-    - name: hasServerOnboarding
-      value: $true
-  - ${{ else }}:
-    - name: hasServerOnboarding
-      value: $false
-  - ${{ if eq(parameters['hasPowerBootShutdown'], 'true') }}:
-    - name: hasPowerBootShutdown
-      value: $true
-  - ${{ else }}:
-    - name: hasPowerBootShutdown
-      value: $false
 
 stages:
 - stage: AzureAuthenticationStage
+  displayName: Azure Authentication Stage
   jobs:
   - job: AzureAuthenticationJob
     steps:
@@ -42,11 +32,26 @@ stages:
           script: |
             az login -u ${{ parameters.username }} -p $(${{ parameters.username }})
 
-- stage: ServerOnboardingStage
+- stage: PowerOnServersStage
+  displayName: Power On Servers Stage
   dependsOn: AzureAuthenticationStage
-  condition: eq('${{ parameters.hasServerOnboarding }}', 'true')
+  condition: eq('${{ parameters.operation }}', 'Power On Servers')
   jobs:
-  - job: ServerOnboardingJob
+  - job: PowerOnServersJob
+    steps:
+      - task: PowerShell@2
+        displayName: Power On Servers
+        inputs:
+          targetType: filePath
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: -operation {{ parameters.operation }}
+
+- stage: OnboardServersStage
+  displayName: Onboard Servers Stage
+  dependsOn: AzureAuthenticationStage
+  condition: eq('${{ parameters.operation }}', 'Onboard Servers')
+  jobs:
+  - job: OnboardServersJob
     steps:
       - task: CopyFiles@2
         displayName: Copy Run Command Scripts to Virtual Machine
@@ -60,6 +65,59 @@ stages:
         inputs:
           targetType: filePath
           filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
-          arguments: >
-            -hasServerOnboarding ${{ variables.hasServerOnboarding }} 
-            -hasPowerBootShutdown ${{ variables.hasPowerBootShutdown }}
+          arguments: -operation {{ parameters.operation }}
+
+- stage: PowerOffServersStage
+  displayName: Power Off Servers Stage
+  dependsOn: AzureAuthenticationStage
+  condition: eq('${{ parameters.operation }}', 'Power Off Servers')
+  jobs:
+  - job: PowerOffServersJob
+    steps:
+      - task: PowerShell@2
+        displayName: Power Off Servers
+        inputs:
+          targetType: filePath
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: -operation {{ parameters.operation }}
+
+- stage: PowerStateOnboardServersStage
+  displayName: Power On Servers, Onboard Servers, Power Off Servers Stage
+  dependsOn: AzureAuthenticationStage
+  condition: eq('${{ parameters.operation }}', 'Power On, Onboard & Power Off Servers')
+  jobs:
+  - job: PowerStateOnServersJob
+    steps:
+      - task: PowerShell@2
+        displayName: Power On Servers
+        inputs:
+          targetType: filePath
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: -operation "Power On Servers"
+
+  - job: PowerStateOnboardServersJob
+    dependsOn: PowerStateOnServersJob
+    steps:
+      - task: CopyFiles@2
+        displayName: Copy Run Command Scripts to Virtual Machine
+        inputs:
+          sourceFolder: $(System.DefaultWorkingDirectory)/scripts/runCommands
+          targetFolder: C:/scripts/ServerOnboardingAutomation
+          overWrite: true
+
+      - task: PowerShell@2
+        displayName: Perform Server Onboarding
+        inputs:
+          targetType: filePath
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: -operation "Onboard Servers"
+
+  - job: PowerStateOffServersJob
+    dependsOn: PowerStateOnboardServersJob
+    steps:
+      - task: PowerShell@2
+        displayName: Power Off Servers
+        inputs:
+          targetType: filePath
+          filePath: $(System.DefaultWorkingDirectory)/scripts/ProcessCsvData.ps1
+          arguments: -operation "Power Off Servers"
