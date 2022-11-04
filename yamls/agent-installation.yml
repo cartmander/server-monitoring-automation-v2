@@ -57,7 +57,7 @@ stages:
     displayName: Onboard Servers Job
     steps:
       - task: CopyFiles@2
-        displayName: Copy Run Command Scripts to Virtual Machine
+        displayName: Onboarding Prerequisites
         inputs:
           sourceFolder: $(System.DefaultWorkingDirectory)/scripts/runCommands
           targetFolder: C:/scripts/ServerOnboardingAutomation
@@ -105,7 +105,7 @@ stages:
     dependsOn: PowerStateOnServersJob
     steps:
       - task: CopyFiles@2
-        displayName: Copy Run Command Scripts to Virtual Machine
+        displayName: Onboarding Prerequisites
         inputs:
           sourceFolder: $(System.DefaultWorkingDirectory)/scripts/runCommands
           targetFolder: C:/scripts/ServerOnboardingAutomation

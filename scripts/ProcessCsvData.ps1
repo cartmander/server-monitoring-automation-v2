@@ -42,6 +42,16 @@ function ProcessServerPowerStateModification
     )
 
     $csv | ForEach-Object -Process {
+
+        foreach ($property in $_)
+        {
+            if ($null -eq $property -or [string]::IsNullOrEmpty($property))
+            {
+                Write-Error "Missing argument: $property"
+                exit 1
+            }
+        }
+
         $ServerPowerStateParameters = @(
             $_.Subscription
             $_.ResourceGroup
@@ -62,6 +72,16 @@ function ProcessMonitoringAgentInstallation
     )
 
     $csv | ForEach-Object -Process {
+
+        foreach ($property in $_)
+        {
+            if ($null -eq $property -or [string]::IsNullOrEmpty($property))
+            {
+                Write-Error "Missing argument: $property"
+                exit 1
+            }
+        }
+
         $MMAInstallationParameters = @(
             $_.Subscription
             $_.ResourceGroup
