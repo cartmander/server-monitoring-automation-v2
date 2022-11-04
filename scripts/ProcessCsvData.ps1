@@ -1,28 +1,25 @@
 param(
     [Parameter(Mandatory=$true)]
-    [bool] $hasServerOnboarding=$false,
-
-    [Parameter(Mandatory=$true)]
-    [bool] $hasPowerBootShutdown=$false
+    [string] $operation
 )
 
-function VerifyJobState
+function ValidateJobState
 {
     param(
         [object] $childJob
     )
 
-    Write-Host "=================================================="
-    Write-Host "Job output for $($childJob.Name)"
-    Write-Host "=================================================="
+    Write-Host "##[command]=================================================="
+    Write-Host "##[command]Job output for $($childJob.Name)"
+    Write-Host "##[command]=================================================="
 
     $childJob | Receive-Job -Keep
-    Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state"
+    Write-Host "##[section]$($childJob.Name) finished executing with `"$($childJob.State)`" state"
 }
 
 function JobLogging
 {
-    Write-Host "Waiting for jobs to finish executing..."
+    Write-Host "##[command]Waiting for jobs to finish executing..."
 
     $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*AutomationJob"}
     $JobTable | ForEach-Object -Process {
@@ -31,29 +28,49 @@ function JobLogging
 
     $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
     $ChildJobs | ForEach-Object -Process {
-        VerifyJobState $_
+        ValidateJobState $_
     }
 
-    $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
+    $ChildJobs | Select-Object -Property Id, Name, State, PSBeginTime, PSEndTime | Format-Table
 }
 
-function ProcessServerOnboarding
+function ProcessServerPowerStateModification
+{
+    param(
+        [object] $csv,
+        [bool] $shouldPowerOn
+    )
+
+    $csv | ForEach-Object -Process {
+        $ServerPowerStateArguments = @(
+            $_.Subscription
+            $_.ResourceGroup
+            $_.VirtualMachineName
+            $shouldPowerOn
+        )
+
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateArguments
+    }
+
+    JobLogging
+}
+
+function ProcessMonitoringAgentInstallation
 {
     param(
         [object] $csv
     )
 
     $csv | ForEach-Object -Process {
-        $MMAInstallationParameters = @(
+        $MMAInstallationArguments = @(
             $_.Subscription
             $_.ResourceGroup
             $_.VirtualMachineName
             $_.WorkspaceId
             $_.WorkspaceKey
-            $hasPowerBootShutdown
         )
 
-        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationArguments
     }
 
     JobLogging
@@ -71,13 +88,13 @@ function ValidateSubscriptionAccess
 
         if ($account_list.name -notcontains $_)
         {
-            Write-Error "You don't have access to $($_). Please check PIM"
+            Write-Host "##[error]You don't have access to $($_). Please check PIM"
             $no_subscription_access += 1
         }
 
         else 
         {
-            Write-Host "$($_) is visible from your account."
+            Write-Host "##[section]$($_) is visible from your account."
         }
     }
 
@@ -100,7 +117,7 @@ function ValidateCsv
     {
         if (-not $requiredHeaders.Contains($header))
         {
-            Write-Error "CSV contains invalid headers"
+            Write-Host "##[error]CSV: CSV contains invalid headers"
             exit 1
         }
     }
@@ -110,24 +127,32 @@ try
 {
     $ErrorActionPreference = 'Continue'
 
-    Write-Host "Initializing automation..." -ForegroundColor Green
+    Write-Host "##[section]Initializing automation..."
     
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     
     ValidateCsv $csv
     ValidateSubscriptionAccess $csv
 
-    if ($hasServerOnboarding)
+    if ($operation -eq "Power On Servers")
     {
-        ProcessServerOnboarding $csv
+        ProcessServerPowerStateModification $csv $true
+    }
+
+    elseif ($operation -eq "Power Off Servers")
+    {
+        ProcessServerPowerStateModification $csv $false
+    }
+
+    elseif ($operation -eq "Onboard Servers")
+    {
+        ProcessMonitoringAgentInstallation $csv
     }
     
-    Write-Host "Done running the automation..." -ForegroundColor Green
-    exit 0
+    Write-Host "##[section]Done running the automation..."
 }
 
 catch 
 {
-    Write-Host "Catch block error:"
-    $PSItem.ScriptStackTrace
+    exit 1
 }

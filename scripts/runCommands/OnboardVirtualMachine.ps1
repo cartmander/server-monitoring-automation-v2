@@ -65,7 +65,7 @@ process
 
     catch 
     {
-        Write-Error "$($error[0].Exception.Message)"
+        Write-Host "$($error[0].Exception.Message)"
     }
 
     Write-Host "HealthService is now $ServiceStatus, SCOM monitoring will be stopped as well." -ForegroundColor Yellow
@@ -120,7 +120,7 @@ process
 
     catch 
     {
-        Write-Error "$($error[0].Exception.Message)"
+        Write-Host "$($error[0].Exception.Message)"
     }
 
     Write-Host "HealthService is now $($StartedServiceStatus) , SCOM monitoring will be resumed as well." -ForegroundColor Green

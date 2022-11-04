@@ -1,21 +1,9 @@
 ﻿param(
-    [Parameter(Mandatory=$true)]
     [string] $subscription,
-
-    [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
-
-    [Parameter(Mandatory=$true)]
     [string] $virtualMachineName,
-
-    [Parameter(Mandatory=$true)]
     [string] $workspaceId,
-
-    [Parameter(Mandatory=$true)]
-    [string] $workspaceKey,
-
-    [Parameter(Mandatory=$true)]
-    [string] $hasPowerBootShutdown
+    [string] $workspaceKey
 )
 
 function InstallLinuxWorkspace
@@ -28,11 +16,11 @@ function InstallLinuxWorkspace
     {
         if ($resource.typePropertiesType -eq "OmsAgentForLinux")
         {
-            Write-Host "Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
+            Write-Host "##[warning]Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
             
             az vm extension delete --resource-group $virtualMachine.resourceGroup --vm-name $virtualMachine.name --name $resource.name
             
-            Write-Host "Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
+            Write-Host "##[warning]Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
         }
     }
 
@@ -48,7 +36,7 @@ function InstallLinuxWorkspace
     --settings $settings `
     --version "1.13"
 
-    Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
+    Write-Host "##[section]Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)"
 }
 
 function InstallWindowsWorkspace
@@ -62,7 +50,7 @@ function InstallWindowsWorkspace
 
     if ($workspaceIdList.Count -ge 4)
     {
-        Write-Error "Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
+        Write-Host "##[warning]Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
         return
     }
 
@@ -74,7 +62,7 @@ function InstallWindowsWorkspace
             {
                 $shouldAddWorkspace = "false"
 
-                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)" -ForegroundColor Yellow
+                Write-Host "##[warning]Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)"
                 break
             }
         }
@@ -88,7 +76,7 @@ function InstallWindowsWorkspace
 
     if ($shouldAddWorkspace -eq "true")
     {
-        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Windows)" -ForegroundColor Green
+        Write-Host "##[section]Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Windows)"
     }
 }
 
@@ -128,59 +116,43 @@ function EvaluateVirtualMachine
     }
 }
 
-function PowerVirtualMachine
-{
-    param(
-        [bool] $shouldPowerVM
-    )
-
-    if ($shouldPowerVM)
-    {
-        az vm start --name $virtualMachineName --resource-group $resourceGroup
-        Write-Host "Virtual Machine: $virtualMachineName has been powered on"
-    }
-
-    else
-    {
-        az vm deallocate --name $virtualMachineName --resource-group $resourceGroup --no-wait
-        Write-Host "Virtual Machine: $virtualMachineName is being deallocated"
-    }
-}
-
 function ValidateVirtualMachine
 {
-    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')]" -d -o json | ConvertFrom-Json
+    $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')  &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
 
-    if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine.name))
+    if ($null -eq $virtualMachine)
     {
-        Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
+        Write-Host "##[error]No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
         exit 1
     }
 
     return $virtualMachine
 }
 
+function ValidateArguments
+{
+    if ([string]::IsNullOrEmpty($subscription) -or
+    [string]::IsNullOrEmpty($resourceGroup) -or 
+    [string]::IsNullOrEmpty($virtualMachineName) -or 
+    [string]::IsNullOrEmpty($workspaceId) -or 
+    [string]::IsNullOrEmpty($workspaceKey))
+    {
+        Write-Host "##[error]Required parameters for onboarding servers were not properly supplied with arguments"
+        exit 1
+    }
+}
+
 try
 {
     az account set --subscription $subscription
 
+    ValidateArguments
     $virtualMachine = ValidateVirtualMachine
 
-    if ($hasPowerBootShutdown -and $virtualMachine.powerState -ne "VM running")
-    {
-        PowerVirtualMachine $true
-        EvaluateVirtualMachine $virtualMachine
-        PowerVirtualMachine $false
-    }
-
-    else 
-    {
-        EvaluateVirtualMachine $virtualMachine
-    }
+    EvaluateVirtualMachine $virtualMachine
 }
 
 catch
 {
-    Write-Host $_
     exit 1
 }
