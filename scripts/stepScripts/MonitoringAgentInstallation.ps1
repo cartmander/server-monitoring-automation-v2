@@ -96,7 +96,7 @@ function ListWindowsWorkspaces
     return $workspaceIdList
 }
 
-function EvaluateVirtualMachine
+function InstallMonitoringAgent
 {
     param(
         [object] $virtualMachine
@@ -150,7 +150,7 @@ try
     ValidateArguments
     $virtualMachine = ValidateVirtualMachine
 
-    EvaluateVirtualMachine $virtualMachine
+    InstallMonitoringAgent $virtualMachine
 }
 
 catch
