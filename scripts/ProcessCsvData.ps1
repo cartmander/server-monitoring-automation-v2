@@ -3,23 +3,23 @@ param(
     [string] $operation
 )
 
-function VerifyJobState
+function ValidateJobState
 {
     param(
         [object] $childJob
     )
 
-    Write-Host "=================================================="
-    Write-Host "Job output for $($childJob.Name)"
-    Write-Host "=================================================="
+    Write-Host "##[command]=================================================="
+    Write-Host "##[command]Job output for $($childJob.Name)"
+    Write-Host "##[command]=================================================="
 
     $childJob | Receive-Job -Keep
-    Write-Host "$($childJob.Name) finished executing with `"$($childJob.State)`" state"
+    Write-Host "##[command]$($childJob.Name) finished executing with `"$($childJob.State)`" state"
 }
 
 function JobLogging
 {
-    Write-Host "Waiting for jobs to finish executing..."
+    Write-Host "##[warning]Waiting for jobs to finish executing..."
 
     $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*AutomationJob"}
     $JobTable | ForEach-Object -Process {
@@ -28,10 +28,10 @@ function JobLogging
 
     $ChildJobs = Get-Job -IncludeChildJob | Where-Object {$_.Name -like "*ChildJob"}
     $ChildJobs | ForEach-Object -Process {
-        VerifyJobState $_
+        ValidateJobState $_
     }
 
-    $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
+    $ChildJobs | Select-Object -Property Id, Name, State, PSBeginTime, PSEndTime | Format-Table
 }
 
 function ProcessServerPowerStateModification
