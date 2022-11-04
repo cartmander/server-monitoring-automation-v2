@@ -16,11 +16,11 @@ function InstallLinuxWorkspace
     {
         if ($resource.typePropertiesType -eq "OmsAgentForLinux")
         {
-            Write-Host "Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
+            Write-Host "##[warning]Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
             
             az vm extension delete --resource-group $virtualMachine.resourceGroup --vm-name $virtualMachine.name --name $resource.name
             
-            Write-Host "Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
+            Write-Host "##[warning]Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
         }
     }
 
@@ -36,7 +36,7 @@ function InstallLinuxWorkspace
     --settings $settings `
     --version "1.13"
 
-    Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)" -ForegroundColor Green
+    Write-Host "##[section]Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Linux)"
 }
 
 function InstallWindowsWorkspace
@@ -50,7 +50,7 @@ function InstallWindowsWorkspace
 
     if ($workspaceIdList.Count -ge 4)
     {
-        Write-Error "Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
+        Write-Host "##[warning]Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
         return
     }
 
@@ -62,7 +62,7 @@ function InstallWindowsWorkspace
             {
                 $shouldAddWorkspace = "false"
 
-                Write-Host "Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)" -ForegroundColor Yellow
+                Write-Host "##[warning]Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)"
                 break
             }
         }
@@ -76,7 +76,7 @@ function InstallWindowsWorkspace
 
     if ($shouldAddWorkspace -eq "true")
     {
-        Write-Host "Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Windows)" -ForegroundColor Green
+        Write-Host "##[section]Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Windows)"
     }
 }
 
@@ -122,7 +122,7 @@ function ValidateVirtualMachine
 
     if ($null -eq $virtualMachine)
     {
-        Write-Error "No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
+        Write-Host "##[error]No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
         exit 1
     }
 
@@ -137,7 +137,7 @@ function ValidateArguments
     [string]::IsNullOrEmpty($workspaceId) -or 
     [string]::IsNullOrEmpty($workspaceKey))
     {
-        Write-Host "Required parameters for onboarding servers were not properly supplied with arguments."
+        Write-Host "##[warning]Required parameters for onboarding servers were not properly supplied with arguments."
         exit 1
     }
 }

@@ -88,13 +88,13 @@ function ValidateSubscriptionAccess
 
         if ($account_list.name -notcontains $_)
         {
-            Write-Error "You don't have access to $($_). Please check PIM"
+            Write-Host "##[error]You don't have access to $($_). Please check PIM"
             $no_subscription_access += 1
         }
 
         else 
         {
-            Write-Host "$($_) is visible from your account."
+            Write-Host "##[section]$($_) is visible from your account."
         }
     }
 
@@ -117,7 +117,7 @@ function ValidateCsv
     {
         if (-not $requiredHeaders.Contains($header))
         {
-            Write-Error "CSV contains invalid headers"
+            Write-Host "##[error]CSV: CSV contains invalid headers"
             exit 1
         }
     }
@@ -127,7 +127,7 @@ try
 {
     $ErrorActionPreference = 'Continue'
 
-    Write-Host "##[section] Initializing automation..." -ForegroundColor Green
+    Write-Host "##[section]Initializing automation..."
     
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     
@@ -149,12 +149,10 @@ try
         ProcessMonitoringAgentInstallation $csv
     }
     
-    Write-Host "Done running the automation..." -ForegroundColor Green
-    exit 0
+    Write-Host "##[section]Done running the automation..."
 }
 
 catch 
 {
-    Write-Host "Catch block error:"
-    $PSItem.ScriptStackTrace
+    exit 1
 }
