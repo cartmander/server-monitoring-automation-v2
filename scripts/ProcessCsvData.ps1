@@ -73,6 +73,7 @@ function ProcessMonitoringAgentInstallation
 
     $csv | ForEach-Object -Process {
 
+        Write-Host "Debugging"
         foreach ($property in $_)
         {
             if ($null -eq $property -or [string]::IsNullOrEmpty($property))
