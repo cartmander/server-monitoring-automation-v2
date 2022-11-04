@@ -44,8 +44,8 @@ function ValidateArguments
     {
         if ($null -eq $argument -or [string]::IsNullOrEmpty($argument))
         {
-            Write-Host "Missing argument: $argument"
-            exit 1
+            Write-Error "There is at least one missing argument in one of the CSV rows. Please supply the necessary value to proceed."
+            continue
         }
     }
 }
