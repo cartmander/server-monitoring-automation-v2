@@ -72,20 +72,6 @@ function ProcessMonitoringAgentInstallation
     )
 
     $csv | ForEach-Object -Process {
-
-        Write-Host "Debugging"
-        $_.Subscription
-
-        foreach ($property in $_)
-        {
-            $property
-            if ($null -eq $property -or [string]::IsNullOrEmpty($property))
-            {
-                Write-Error "Missing argument: $property"
-                exit 1
-            }
-        }
-
         $MMAInstallationParameters = @(
             $_.Subscription
             $_.ResourceGroup
@@ -93,7 +79,7 @@ function ProcessMonitoringAgentInstallation
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-
+        
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
     }
 
