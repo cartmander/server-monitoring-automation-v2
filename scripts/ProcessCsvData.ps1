@@ -69,7 +69,7 @@ function ProcessMonitoringAgentInstallation
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-        
+
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationArguments
     }
 
@@ -127,7 +127,7 @@ try
 {
     $ErrorActionPreference = 'Continue'
 
-    Write-Host "Initializing automation..." -ForegroundColor Green
+    Write-Host "##[section] Initializing automation..." -ForegroundColor Green
     
     $csv = Import-Csv ".\csv\VirtualMachines.csv"
     
