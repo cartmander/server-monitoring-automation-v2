@@ -131,11 +131,11 @@ function ValidateVirtualMachine
 
 function ValidateArguments
 {
-    if ($null -eq $subscription -or 
-    $null -eq $resourceGroup -or 
-    $null -eq $virtualMachineName -or 
-    $null -eq $workspaceId -or 
-    $null -eq $workspaceKey)
+    if ([string]::IsNullOrEmpty($subscription) -or
+    [string]::IsNullOrEmpty($resourceGroup) -or 
+    [string]::IsNullOrEmpty($virtualMachineName) -or 
+    [string]::IsNullOrEmpty($workspaceId) -or 
+    [string]::IsNullOrEmpty($workspaceKey))
     {
         Write-Host "Required parameters for onboarding servers are not properly supplied with arguments."
         exit 1

@@ -39,9 +39,9 @@ function ValidateVirtualMachine
 
 function ValidateArguments
 {
-    if ($null -eq $subscription -or 
-    $null -eq $resourceGroup -or 
-    $null -eq $virtualMachineName)
+    if ([string]::IsNullOrEmpty($subscription) -or 
+    [string]::IsNullOrEmpty($resourceGroup) -or 
+    [string]::IsNullOrEmpty($virtualMachineName))
     {
         Write-Host "Required parameters for powering on/off servers are not properly supplied with arguments."
         exit 1
