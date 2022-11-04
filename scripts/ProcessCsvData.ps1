@@ -14,7 +14,7 @@ function ValidateJobState
     Write-Host "##[command]=================================================="
 
     $childJob | Receive-Job -Keep
-    Write-Host "##[command]$($childJob.Name) finished executing with `"$($childJob.State)`" state"
+    Write-Host "##[section]$($childJob.Name) finished executing with `"$($childJob.State)`" state"
 }
 
 function JobLogging
