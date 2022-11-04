@@ -43,7 +43,7 @@ function ValidateArguments
     [string]::IsNullOrEmpty($resourceGroup) -or 
     [string]::IsNullOrEmpty($virtualMachineName))
     {
-        Write-Host "Required parameters for powering on/off servers are not properly supplied with arguments."
+        Write-Host "Required parameters for powering on/off servers were not properly supplied with arguments."
         exit 1
     }
 }

@@ -137,7 +137,7 @@ function ValidateArguments
     [string]::IsNullOrEmpty($workspaceId) -or 
     [string]::IsNullOrEmpty($workspaceKey))
     {
-        Write-Host "Required parameters for onboarding servers are not properly supplied with arguments."
+        Write-Host "Required parameters for onboarding servers were not properly supplied with arguments."
         exit 1
     }
 }
