@@ -19,7 +19,7 @@ function ValidateJobState
 
 function JobLogging
 {
-    Write-Host "##[warning]Waiting for jobs to finish executing..."
+    Write-Host "##[command]Waiting for jobs to finish executing..."
 
     $JobTable = Get-Job | Wait-Job | Where-Object {$_.Name -like "*AutomationJob"}
     $JobTable | ForEach-Object -Process {
