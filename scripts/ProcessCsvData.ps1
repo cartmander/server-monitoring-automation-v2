@@ -34,6 +34,22 @@ function JobLogging
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
 }
 
+function ValidateArguments
+{
+    param(
+        [object] $arguments
+    )
+
+    foreach ($argument in $arguments)
+    {
+        if ($null -eq $argument -or [string]::IsNullOrEmpty($argument))
+        {
+            Write-Host "Missing argument: $argument"
+            exit 1
+        }
+    }
+}
+
 function ProcessServerPowerStateModification
 {
     param(
@@ -42,24 +58,15 @@ function ProcessServerPowerStateModification
     )
 
     $csv | ForEach-Object -Process {
-
-        foreach ($property in $_)
-        {
-            if ($null -eq $property -or [string]::IsNullOrEmpty($property))
-            {
-                Write-Error "Missing argument: $property"
-                exit 1
-            }
-        }
-
-        $ServerPowerStateParameters = @(
+        $ServerPowerStateArguments = @(
             $_.Subscription
             $_.ResourceGroup
             $_.VirtualMachineName
             $shouldPowerOn
         )
 
-        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateParameters
+        ValidateArguments $ServerPowerStateArguments
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateArguments
     }
 
     JobLogging
@@ -72,15 +79,16 @@ function ProcessMonitoringAgentInstallation
     )
 
     $csv | ForEach-Object -Process {
-        $MMAInstallationParameters = @(
+        $MMAInstallationArguments = @(
             $_.Subscription
             $_.ResourceGroup
             $_.VirtualMachineName
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-        
-        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationParameters
+
+        ValidateArguments $MMAInstallationArguments
+        Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationArguments
     }
 
     JobLogging
