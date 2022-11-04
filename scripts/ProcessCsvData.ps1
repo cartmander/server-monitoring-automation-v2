@@ -71,15 +71,14 @@ function ProcessMonitoringAgentInstallation
         [object] $csv
     )
 
-    $csv
-
     $csv | ForEach-Object -Process {
 
         Write-Host "Debugging"
-        $_
+        $_.Subscription
 
         foreach ($property in $_)
         {
+            $property
             if ($null -eq $property -or [string]::IsNullOrEmpty($property))
             {
                 Write-Error "Missing argument: $property"
