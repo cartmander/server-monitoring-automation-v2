@@ -16,11 +16,11 @@ function InstallLinuxWorkspace
     {
         if ($resource.typePropertiesType -eq "OmsAgentForLinux")
         {
-            Write-Host "##[command]Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
+            Write-Host "##[section]Virtual Machine: $virtualMachineName (Linux) is already connected to a workspace and will attempt to disconnect"
             
             az vm extension delete --resource-group $virtualMachine.resourceGroup --vm-name $virtualMachine.name --name $resource.name
             
-            Write-Host "##[command]Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
+            Write-Host "##[section]Virtual Machine: $virtualMachineName (Linux) has been disconnected from its previous workspace"
         }
     }
 
@@ -50,7 +50,7 @@ function InstallWindowsWorkspace
 
     if ($workspaceIdList.Count -ge 4)
     {
-        Write-Host "##[command]Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
+        Write-Host "##[section]Virtual Machine: $virtualMachineName (Windows) has at least four (4) workspaces already"
         return
     }
 
@@ -62,7 +62,7 @@ function InstallWindowsWorkspace
             {
                 $shouldAddWorkspace = "false"
 
-                Write-Host "##[command]Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)"
+                Write-Host "##[section]Workspace ID: $workspaceId is already connected to Virtual Machine: $virtualMachineName (Windows)"
                 break
             }
         }
@@ -137,7 +137,7 @@ function ValidateArguments
     [string]::IsNullOrEmpty($workspaceId) -or 
     [string]::IsNullOrEmpty($workspaceKey))
     {
-        Write-Host "##[command]Required parameters for onboarding servers were not properly supplied with arguments."
+        Write-Host "##[error]Required parameters for onboarding servers were not properly supplied with arguments."
         exit 1
     }
 }
