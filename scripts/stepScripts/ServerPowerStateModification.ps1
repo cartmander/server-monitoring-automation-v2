@@ -1,14 +1,7 @@
 param(
-    [Parameter(Mandatory=$true)]
     [string] $subscription,
-
-    [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
-
-    [Parameter(Mandatory=$true)]
     [string] $virtualMachineName,
-
-    [Parameter(Mandatory=$true)]
     [bool] $shouldPowerOn
 )
 
@@ -44,10 +37,22 @@ function ValidateVirtualMachine
     return $virtualMachine
 }
 
+function ValidateArguments
+{
+    if ($null -eq $subscription -or 
+    $null -eq $resourceGroup -or 
+    $null -eq $virtualMachineName)
+    {
+        Write-Host "Required parameters for powering on/off servers are not properly supplied with arguments."
+        exit 1
+    }
+}
+
 try
 {
     az account set --subscription $subscription
 
+    ValidateArguments
     $virtualMachine = ValidateVirtualMachine
 
     PowerVirtualMachine $virtualMachine
@@ -55,6 +60,5 @@ try
 
 catch
 {
-    Write-Host $_
     exit 1
 }

@@ -34,22 +34,6 @@ function JobLogging
     $ChildJobs | Select-Object -Property Id,Name, State, PSBeginTime,PSEndTime|Format-Table
 }
 
-function ValidateArguments
-{
-    param(
-        [object] $arguments
-    )
-
-    foreach ($argument in $arguments)
-    {
-        if ($null -eq $argument -or [string]::IsNullOrEmpty($argument))
-        {
-            Write-Error "There is at least one missing argument in one of the CSV rows. Please supply the necessary value to proceed."
-            continue
-        }
-    }
-}
-
 function ProcessServerPowerStateModification
 {
     param(
@@ -65,7 +49,6 @@ function ProcessServerPowerStateModification
             $shouldPowerOn
         )
 
-        ValidateArguments $ServerPowerStateArguments
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\ServerPowerStateModification.ps1 -ArgumentList $ServerPowerStateArguments
     }
 
@@ -86,8 +69,7 @@ function ProcessMonitoringAgentInstallation
             $_.WorkspaceId
             $_.WorkspaceKey
         )
-
-        ValidateArguments $MMAInstallationArguments
+        
         Start-Job -Name "$($_.VirtualMachineName)-AutomationJob" -FilePath .\scripts\stepScripts\MonitoringAgentInstallation.ps1 -ArgumentList $MMAInstallationArguments
     }
 

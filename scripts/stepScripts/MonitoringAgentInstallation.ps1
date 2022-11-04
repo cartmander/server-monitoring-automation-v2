@@ -1,17 +1,8 @@
 ﻿param(
-    [Parameter(Mandatory=$true)]
     [string] $subscription,
-
-    [Parameter(Mandatory=$true)]
     [string] $resourceGroup,
-
-    [Parameter(Mandatory=$true)]
     [string] $virtualMachineName,
-
-    [Parameter(Mandatory=$true)]
     [string] $workspaceId,
-
-    [Parameter(Mandatory=$true)]
     [string] $workspaceKey
 )
 
@@ -138,10 +129,24 @@ function ValidateVirtualMachine
     return $virtualMachine
 }
 
+function ValidateArguments
+{
+    if ($null -eq $subscription -or 
+    $null -eq $resourceGroup -or 
+    $null -eq $virtualMachineName -or 
+    $null -eq $workspaceId -or 
+    $null -eq $workspaceKey)
+    {
+        Write-Host "Required parameters for onboarding servers are not properly supplied with arguments."
+        exit 1
+    }
+}
+
 try
 {
     az account set --subscription $subscription
 
+    ValidateArguments
     $virtualMachine = ValidateVirtualMachine
 
     EvaluateVirtualMachine $virtualMachine
@@ -149,6 +154,5 @@ try
 
 catch
 {
-    Write-Host $_
     exit 1
 }
