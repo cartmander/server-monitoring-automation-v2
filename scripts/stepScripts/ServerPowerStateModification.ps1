@@ -11,16 +11,24 @@ function PowerVirtualMachine
         [object] $virtualMachine
     )
 
-    if ($shouldPowerOn -and $virtualMachine.powerState -ne "VM running")
+    $powerState = $virtualMachine.powerState
+
+    if ($shouldPowerOn -and $powerState -ne "VM running")
     {
         az vm start --name $virtualMachineName --resource-group $resourceGroup
         Write-Host "##[section]Virtual Machine: $virtualMachineName has been powered on"
     }
 
-    elseif (-not $shouldPowerOn -and $virtualMachine.powerState -eq "VM running")
+    elseif (-not $shouldPowerOn -and $powerState -eq "VM running")
     {
         az vm deallocate --name $virtualMachineName --resource-group $resourceGroup
         Write-Host "##[section]Virtual Machine: $virtualMachineName has been deallocated"
+    }
+
+    else
+    {
+        Write-Host "##[error]Invalid Virtual Machine status: $powerState and will not be powered on nor powered off"
+        exit 1
     }
 }
 
@@ -43,7 +51,7 @@ function ValidateArguments
     [string]::IsNullOrEmpty($resourceGroup) -or 
     [string]::IsNullOrEmpty($virtualMachineName))
     {
-        Write-Host "##[error]Required parameters for powering on/off servers were not properly supplied with arguments."
+        Write-Host "##[error]Required parameters for powering on/off servers were not properly supplied with arguments"
         exit 1
     }
 }
