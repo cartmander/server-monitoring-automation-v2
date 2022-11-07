@@ -123,7 +123,7 @@ function ValidateVirtualMachine
     if ($null -eq $virtualMachine)
     {
         Write-Host "##[error]No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
-        Write-Host "##[error]Either the server does not exist or is not on a running state. Make sure you have the right privileges to read resources"
+        Write-Host "##[error]Either the server does not exist or is not on a running state. Make sure you have the right privileges to read and modify resources"
         exit 1
     }
 
