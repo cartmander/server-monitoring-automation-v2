@@ -114,13 +114,19 @@ function InstallMonitoringAgent
     {
         InstallLinuxWorkspace $virtualMachine
     }
+
+    else
+    {
+        Write-Host "##[error]Unsupported Operating System: $osType for Virtual Machine: $virtualMachineName"
+        exit 1
+    }
 }
 
 function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')  &&  powerState=='VM running']" -d -o json | ConvertFrom-Json
 
-    if ($null -eq $virtualMachine)
+    if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine))
     {
         Write-Host "##[error]No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
         Write-Host "##[error]Either the server does not exist or is not on a running state. Make sure you have the right privileges to read and modify resources"

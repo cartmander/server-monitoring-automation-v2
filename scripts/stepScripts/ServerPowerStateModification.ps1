@@ -36,7 +36,7 @@ function ValidateVirtualMachine
 {
     $virtualMachine = az vm list --resource-group $resourceGroup --query "[?contains(name, '$virtualMachineName')]" -d -o json | ConvertFrom-Json
 
-    if ($null -eq $virtualMachine)
+    if ($null -eq $virtualMachine -or [string]::IsNullOrEmpty($virtualMachine))
     {
         Write-Host "##[error]No Results: Subscription - $subscription | Resource Group - $resourceGroup | Virtual Machine Name - $virtualMachineName"
         Write-Host "##[error]Server does not exist. Make sure you have the right privileges to read and modify resources"
