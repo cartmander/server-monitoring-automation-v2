@@ -27,7 +27,7 @@ function PowerVirtualMachine
 
     else
     {
-        Write-Host "##[error]Invalid Virtual Machine status: $powerState and will not be powered on nor powered off"
+        Write-Host "##[error]Invalid Virtual Machine status: $powerState and will not be powered on nor be powered off"
         exit 1
     }
 }

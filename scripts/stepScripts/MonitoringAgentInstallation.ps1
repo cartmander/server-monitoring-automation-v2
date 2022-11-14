@@ -68,14 +68,14 @@ function InstallWindowsWorkspace
         }
     }
 
-    az vm run-command invoke --command-id RunPowerShellScript `
-    --name $virtualMachineName `
-    --resource-group $resourceGroup `
-    --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
-    --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey" "shouldAddWorkspace=$shouldAddWorkspace"
-
     if ($shouldAddWorkspace -eq "true")
     {
+        az vm run-command invoke --command-id RunPowerShellScript `
+        --name $virtualMachineName `
+        --resource-group $resourceGroup `
+        --scripts "@C:\\scripts\ServerOnboardingAutomation\OnboardVirtualMachine.ps1" `
+        --parameters "workspaceId=$workspaceId" "workspaceKey=$workspaceKey" "shouldAddWorkspace=$shouldAddWorkspace"
+
         Write-Host "##[section]Workspace ID: $workspaceId has connected to Virtual Machine: $virtualMachineName (Windows)"
     }
 }
